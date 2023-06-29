@@ -6,6 +6,8 @@ namespace logitech_z906 {
 
 static const char *const TAG = "logitech_z906";
 
+float LogitechZ906Component::get_setup_priority() const { return setup_priority::DATA; }
+
 void LogitechZ906Component::setup() { ESP_LOGCONFIG(TAG, "Setting up LogitechZ906..."); }
 
 void LogitechZ906Component::loop() {}
