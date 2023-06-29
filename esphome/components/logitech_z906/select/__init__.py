@@ -11,9 +11,9 @@ LogitechZ906Select = logitech_z906_ns.class_(
 
 CONFIG_SCHEMA = LOGITECH_Z906_COMPONENT_SCHEMA.extend(
     {
-        cv.Required(CONF_SOURCE): select.select_schema(
-            LogitechZ906Select, options=("Aux", "Optical")
-        ).extend(cv.COMPONENT_SCHEMA)
+        cv.Required(CONF_SOURCE): select.select_schema(LogitechZ906Select).extend(
+            cv.COMPONENT_SCHEMA
+        )
     }
 )
 
