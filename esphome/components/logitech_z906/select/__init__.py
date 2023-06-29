@@ -5,6 +5,8 @@ from .. import LOGITECH_Z906_COMPONENT_SCHEMA, CONF_LOGITECH_Z906_ID, logitech_z
 
 CONF_SOURCE = "source_selection"
 
+SOURCES = ["Line", "Chinch", "Optical1", "Optical2", "Coaxial", "Aux"]
+
 LogitechZ906Select = logitech_z906_ns.class_(
     "LogitechZ906Select", select.Select, cg.Component
 )
@@ -20,7 +22,7 @@ CONFIG_SCHEMA = LOGITECH_Z906_COMPONENT_SCHEMA.extend(
 
 async def to_code(config):
     parent = await cg.get_variable(config[CONF_LOGITECH_Z906_ID])
-    var = await select.new_select(config[CONF_SOURCE])
+    var = await select.new_select(config[CONF_SOURCE], options=SOURCES)
     await cg.register_component(var, config[CONF_SOURCE])
     cg.add(parent.set_source_select(var))
     cg.add(var.set_parent(parent))
