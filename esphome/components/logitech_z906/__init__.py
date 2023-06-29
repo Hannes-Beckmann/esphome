@@ -5,6 +5,7 @@ from esphome.const import CONF_ID
 
 DEPENDENCIES = ["uart"]
 AUTO_LOAD = ["select"]
+MULTI_CONF = True
 
 CONF_LOGITECH_Z906_ID = "logitech_z906_id"
 
@@ -19,9 +20,11 @@ LOGITECH_Z906_COMPONENT_SCHEMA = cv.Schema(
     }
 )
 
-CONFIG_SCHEMA = cv.Schema(
-    {cv.GenerateID(): cv.declare_id(LogitechZ906Component)}
-).extend(uart.UART_DEVICE_SCHEMA)
+CONFIG_SCHEMA = cv.All(
+    cv.Schema({cv.GenerateID(): cv.declare_id(LogitechZ906Component)})
+    .extend(cv.COMPONENT_SCHEMA)
+    .extend(uart.UART_DEVICE_SCHEMA)
+)
 
 
 async def to_code(config):

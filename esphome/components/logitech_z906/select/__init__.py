@@ -4,6 +4,7 @@ from esphome.components import select
 from .. import LOGITECH_Z906_COMPONENT_SCHEMA, CONF_LOGITECH_Z906_ID, logitech_z906_ns
 
 CONF_SOURCE = "source_selection"
+
 LogitechZ906Select = logitech_z906_ns.class_(
     "LogitechZ906Select", select.Select, cg.Component
 )
@@ -11,7 +12,7 @@ LogitechZ906Select = logitech_z906_ns.class_(
 CONFIG_SCHEMA = LOGITECH_Z906_COMPONENT_SCHEMA.extend(
     {
         cv.Required(CONF_SOURCE): select.select_schema(
-            LogitechZ906Select, options=["Aux, Optical"]
+            LogitechZ906Select, options=("Aux", "Optical")
         ).extend(cv.COMPONENT_SCHEMA)
     }
 )
