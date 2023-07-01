@@ -83,7 +83,7 @@ class Z906 {
  public:
   Z906();
 
-  void set_uart(uart::UARTDevice *uart) { uart_ = uart; }
+  void set_uart(uart::UARTDevice *uart);
 
   int cmd(uint8_t);
   int cmd(uint8_t, uint8_t);
