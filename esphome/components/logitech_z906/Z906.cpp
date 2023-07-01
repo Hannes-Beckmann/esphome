@@ -4,6 +4,8 @@
 namespace esphome {
 namespace logitech_z906 {
 
+Z906::Z906() {}
+
 void Z906::set_uart(uart::UARTDevice *uart) {
   this->uart_ = uart;
   // dev_serial->begin(BAUD_RATE,SERIAL_CONFIG);

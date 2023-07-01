@@ -2,7 +2,7 @@
 
 enum SwitchType { POWER, MUTE };
 
-SwitchType resolve_switch_type(const std::string &type) {
+inline SwitchType resolve_switch_type(const std::string &type) {
   if (type == "power") {
     return POWER;
   } else if (type == "mute") {
@@ -13,7 +13,7 @@ SwitchType resolve_switch_type(const std::string &type) {
 
 enum SelectType { SOURCE, EFFECT };
 
-SelectType resolve_select_type(const std::string &type) {
+inline SelectType resolve_select_type(const std::string &type) {
   if (type == "source") {
     return SOURCE;
   } else if (type == "effect") {
@@ -24,14 +24,14 @@ SelectType resolve_select_type(const std::string &type) {
 
 enum NumberType { MASTER, BASS, CENTER, REAR };
 
-NumberType resolve_number_type(const std::string &type) {
-  if (type == "master") {
+inline NumberType resolve_number_type(const std::string &type) {
+  if (type == "master_volume") {
     return MASTER;
-  } else if (type == "bass") {
+  } else if (type == "bass_volume") {
     return BASS;
-  } else if (type == "center") {
+  } else if (type == "center_volume") {
     return CENTER;
-  } else if (type == "rear") {
+  } else if (type == "rear_volume") {
     return REAR;
   }
   return MASTER;
