@@ -1,0 +1,40 @@
+uart:
+  rx_pin: GPIO3
+  tx_pin: GPIO1
+  baud_rate: 57600
+  parity: ODD
+  stop_bits: 1
+  
+
+logitech_z906:
+  id: logitechid
+
+
+select:
+  - platform: logitech_z906
+    logitech_z906_id: logitechid
+    source:
+      name: "audio-source"
+    effect:
+      name: "effect"
+
+switch:
+  - platform: logitech_z906
+    logitech_z906_id: logitechid
+    mute:
+      name: "mute"
+    power:
+      name: "power"
+
+number:
+  - platform: logitech_z906
+    logitech_z906_id: logitechid
+    master_volume:
+      name: "master_volume"
+    center_volume:
+      name: "center_volume"
+    rear_volume:
+      name: "rear_volume"
+    bass_volume:
+      name: "bass_volume"
+    
