@@ -10,7 +10,7 @@ namespace logitech_z906 {
 
 class LogitechZ906Switch : public switch_::Switch, public Component {
  public:
-  void set_parent(LogitechZ906Component *parent) { this->parent_ = parent; };
+  void set_parent(LogitechZ906Component *parent);
   void dump_config() override;
   void set_switch_type(const std::string &type);
   void registrate();

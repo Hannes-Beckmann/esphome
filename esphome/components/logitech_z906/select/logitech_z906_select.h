@@ -10,7 +10,7 @@ namespace logitech_z906 {
 
 class LogitechZ906Select : public select::Select, public Component {
  public:
-  void set_parent(LogitechZ906Component *parent) { this->parent_ = parent; };
+  void set_parent(LogitechZ906Component *parent);
   void set_select_type(const std::string &type);
   void registrate();
   void dump_config() override;
