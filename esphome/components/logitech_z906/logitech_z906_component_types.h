@@ -1,3 +1,5 @@
+#pragma once
+
 enum SwitchType { POWER, MUTE };
 
 SwitchType resolve_switch_type(const std::string &type) {
