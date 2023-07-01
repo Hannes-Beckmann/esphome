@@ -2,23 +2,23 @@
 
 #include "../logitech_z906.h"
 
-#include "esphome/components/select/select.h"
+#include "esphome/components/switch/switch.h"
 #include "esphome/core/component.h"
 
 namespace esphome {
 namespace logitech_z906 {
 
-class LogitechZ906Select : public select::Select, public Component {
+class LogitechZ906Switch : public switch_::Switch, public Component {
  public:
   void set_parent(LogitechZ906Component *parent) { this->parent_ = parent; };
-  void set_select_type(const std::string &type);
-  void registrate();
   void dump_config() override;
+  void set_switch_type(const std::string &type);
+  void registrate();
 
  protected:
-  void control(const std::string &value) override;
+  void write_state(bool state) override;
   LogitechZ906Component *parent_;
-  SelectType type_;
+  SwitchType type_;
 };
 
 }  // namespace logitech_z906
