@@ -10,7 +10,10 @@ void LogitechZ906Switch::dump_config() { LOG_SWITCH("", "LogitechZ906 Switch", t
 void LogitechZ906Switch::set_switch_type(const std::string &type) { this->type_ = resolve_switch_type(type); }
 void LogitechZ906Switch::set_parent(LogitechZ906Component *parent) { this->parent_ = parent; }
 void LogitechZ906Switch::registrate() { this->parent_->set_switch(this->type_, this); }
-void LogitechZ906Switch::write_state(bool state) { this->parent_->set_switch_state(this->type_, state); }
+void LogitechZ906Switch::write_state(bool state) {
+  this->parent_->set_switch_state(this->type_, state);
+  publish_state(state);
+}
 
 }  // namespace logitech_z906
 }  // namespace esphome
