@@ -86,6 +86,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
 
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++)
     this->uart_->read();
+  return 1;
 }
 
 void Z906::log_status() {
