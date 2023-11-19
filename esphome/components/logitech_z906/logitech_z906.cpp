@@ -263,51 +263,50 @@ void LogitechZ906Component::set_switch_state(SwitchType type, bool state) {
 
 void LogitechZ906Component::set_source(const std::string &source) {
   ESP_LOGD(TAG, "Setting source to %s", source.c_str());
-  Input input = input_from_string(source);
-  this->effect_->publish_state(effect_to_string(this->state_.effect[this->state_.input]));
-  case (input) {
-    case Input::AUX:
+  Input input = string_to_input(source);
+  switch (input) {
+    case AUX:
       this->z906_.cmd(SELECT_INPUT_AUX);
       break;
-    case Input::LINE:
+    case LINE:
       this->z906_.cmd(SELECT_INPUT_1);
       break;
-    case Input::CHINCH:
+    case CHINCH:
       this->z906_.cmd(SELECT_INPUT_2);
       break;
-    case Input::OPTICAL1:
+    case OPTICAL1:
       this->z906_.cmd(SELECT_INPUT_3);
       break;
-    case Input::OPTICAL2:
+    case OPTICAL2:
       this->z906_.cmd(SELECT_INPUT_4);
       break;
-    case Input::COAXIAL:
+    case COAXIAL:
       this->z906_.cmd(SELECT_INPUT_5);
       break;
+  this->effect_->publish_state(source);
   this->state_.input = input;
   }
 }
 
 void LogitechZ906Component::set_effect(const std::string &effect) {
   ESP_LOGD(TAG, "Setting effect to %s", effect.c_str());
-
-  Effect effect = effect_from_string(effect);
-
-  case (effect) {
-    case Effect::NONE:
+  Effect effect_e = string_to_effect(effect);
+  switch (effect_e) {
+    case NONE:
       this->z906_.cmd(SELECT_EFFECT_NO);
       break;
-    case Effect::EFFECT_3D:
+    case EFFECT_3D:
       this->z906_.cmd(SELECT_EFFECT_3D);
       break;
-    case Effect::EFFECT_21:
+    case EFFECT_21:
       this->z906_.cmd(SELECT_EFFECT_21);
       break;
-    case Effect::EFFECT_41:
+    case EFFECT_41:
       this->z906_.cmd(SELECT_EFFECT_41);
       break;
     
-    this->state_.effect[this->state_.input] = effect;
+    this->state_.effect[this->state_.input] = effect_e;
+    this->effect_->publish_state(effect);
   }
 }
 
@@ -330,7 +329,7 @@ void LogitechZ906Component::set_volume_center(float volume) {
 void LogitechZ906Component::set_volume_bass(float volume) {
   ESP_LOGD(TAG, "Setting bass volume to %f", volume);
   uint8_t amount = ((uint8_t) volume) - this->state_.bass_volume;
-  uint8_t cmd = amount > 0 ? LEVEL_BASS_UP : LEVEL_BASS_DOWN;
+  uint8_t cmd = amount > 0 ? LEVEL_SUB_UP : LEVEL_SUB_DOWN;
   this->turn_volume(cmd, amount);
   this->state_.bass_volume += amount;
   this->bass_volume_->publish_state(this->state_.bass_volume);
@@ -338,7 +337,7 @@ void LogitechZ906Component::set_volume_bass(float volume) {
 void LogitechZ906Component::set_volume_master(float volume) {
   ESP_LOGD(TAG, "Setting master volume to %f", volume);
   uint8_t amount = ((uint8_t) volume) - this->state_.master_volume;
-  uint8_t cmd = amount > 0 ? LEVEL_MASTER_UP : LEVEL_MASTER_DOWN;
+  uint8_t cmd = amount > 0 ? LEVEL_MAIN_UP : LEVEL_MAIN_DOWN;
   this->turn_volume(cmd, amount);
   this->state_.master_volume += amount;
   this->master_volume_->publish_state(this->state_.master_volume);

@@ -18,7 +18,7 @@ struct State{
 
 
     // get String representation of effect
-    inline string effect_to_string(Effect effect){
+    inline std::string effect_to_string(Effect effect){
         switch (effect){
             case NONE:
                 return "None";

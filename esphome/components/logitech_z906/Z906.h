@@ -66,33 +66,33 @@ namespace logitech_z906 {
 
 // Status
 
-#define EXP_STX = 0xAA
-#define EXP_MODEL_STATUS = 0x0A
-#define EXP_MODEL_TEMP = 0x0C
+#define EXP_STX 0xAA
+#define EXP_MODEL_STATUS 0x0A
+#define EXP_MODEL_TEMP 0x0C
 
-#define STATUS_STX = 0x00
-#define STATUS_MODEL = 0x01
-#define STATUS_LENGTH = 0x02
-#define STATUS_MAIN_LEVEL = 0x03
-#define STATUS_READ_LEVEL = 0x04
-#define STATUS_CENTER_LEVEL = 0x05
-#define STATUS_SUB_LEVEL = 0x06
-#define STATUS_CURRENT_INPUT = 0x07
-#define STATUS_UNKNOWN = 0x08
-#define STATUS_FX_INPUT_4 = 0x09
-#define STATUS_FX_INPUT_5 = 0x0A
-#define STATUS_FX_INPUT_2 = 0x0B
-#define STATUS_FX_INPUT_AUX = 0x0C
-#define STATUS_FX_INPUT_1 = 0x0D
-#define STATUS_FX_INPUT_3 = 0x0E
-#define STATUS_SPDIF_STATUS = 0x0F
-#define STATUS_SIGNAL_STATUS = 0x10
-#define STATUS_VER_A = 0x11
-#define STATUS_VER_B = 0x12
-#define STATUS_VER_C = 0x13
-#define STATUS_STBY = 0x14
-#define STATUS_AUTO_STBY = 0x15
-#define STATUS_CHECKSUM = 0x16
+#define STATUS_STX 0x00
+#define STATUS_MODEL 0x01
+#define STATUS_LENGTH 0x02
+#define STATUS_MAIN_LEVEL 0x03
+#define STATUS_READ_LEVEL 0x04
+#define STATUS_CENTER_LEVEL 0x05
+#define STATUS_SUB_LEVEL 0x06
+#define STATUS_CURRENT_INPUT 0x07
+#define STATUS_UNKNOWN 0x08
+#define STATUS_FX_INPUT_4 0x09
+#define STATUS_FX_INPUT_5 0x0A
+#define STATUS_FX_INPUT_2 0x0B
+#define STATUS_FX_INPUT_AUX 0x0C
+#define STATUS_FX_INPUT_1 0x0D
+#define STATUS_FX_INPUT_3 0x0E
+#define STATUS_SPDIF_STATUS 0x0F
+#define STATUS_SIGNAL_STATUS 0x10
+#define STATUS_VER_A 0x11
+#define STATUS_VER_B 0x12
+#define STATUS_VER_C 0x13
+#define STATUS_STBY 0x14
+#define STATUS_AUTO_STBY 0x15
+#define STATUS_CHECKSUM 0x16
 
 // MASK
 
@@ -121,10 +121,11 @@ class Z906 {
   int cmd(uint8_t, uint8_t);
   int request(uint8_t);
   void log_status();
+  int receive_status();
 
   uint8_t main_sensor();
   uint8_t status[STATUS_TOTAL_LENGTH];
-  
+
  protected:
   uart::UARTComponent *amplifier_uart_;
   uart::UARTComponent *console_uart_;
