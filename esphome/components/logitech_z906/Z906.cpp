@@ -30,6 +30,8 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
 
 
 int Z906::update() {
+  ESP_LOGD(TAG, "Fetch update");
+  ESP_LOGD(TAG, "Middle: %i", GET_STATUS);
   this->amplifier_uart_->write_byte(GET_STATUS);
 
   unsigned long currentMillis = millis();
@@ -42,6 +44,7 @@ int Z906::update() {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     status[i] = data;
+    ESP_LOGD(TAG, "Mid Amp: %i", data);
   }
   if (status[STATUS_STX] != EXP_STX)
     return 0;
@@ -66,8 +69,9 @@ int Z906::request(uint8_t cmd) {
 }
 
 int Z906::cmd(uint8_t cmd) {
+  ESP_LOGD(TAG, "Single cmd");
   this->amplifier_uart_->write_byte(cmd);
-
+  ESP_LOGD(TAG, "Middle: %i", cmd);
   unsigned long currentMillis = millis();
 
   while (this->amplifier_uart_->available() == 0){
@@ -77,10 +81,12 @@ int Z906::cmd(uint8_t cmd) {
   }
   uint8_t data = 0;
   this->amplifier_uart_->read_byte(&data);
+  ESP_LOGD(TAG, "Mid Amp: %i", data);
   return data;
 }
 
 int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
+  ESP_LOGD(TAG, "Long cmd");
   update();
 
   status[cmd_a] = cmd_b;
@@ -89,6 +95,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
     this->amplifier_uart_->write_byte(status[i]);
+    ESP_LOGD(TAG, "Middle: %i", status[i]);
 
   unsigned long currentMillis = millis();
 
@@ -99,6 +106,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
+    ESP_LOGD(TAG, "Mid Amp: %i", data);
   }
   return 1;
 }
