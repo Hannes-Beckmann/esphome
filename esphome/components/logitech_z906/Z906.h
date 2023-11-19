@@ -7,7 +7,7 @@ namespace logitech_z906 {
 
 #define BAUD_RATE 57600
 #define SERIAL_CONFIG SERIAL_8O1
-#define SERIAL_TIME_OUT 100
+#define SERIAL_TIME_OUT 1000
 
 #define STATUS_TOTAL_LENGTH 0x17
 #define ACK_TOTAL_LENGTH 0x05
