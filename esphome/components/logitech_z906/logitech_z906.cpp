@@ -27,19 +27,18 @@ void LogitechZ906Component::set_console_uart_parent(uart::UARTComponent *console
 
 void LogitechZ906Component::update_internal_state() {
   this->state_.input = this->z906_.status[STATUS_CURRENT_INPUT];
-  this->state_.effect[Input::LINE] = this->z906_.status[STATUS_FX_INPUT_1];
-  this->state_.effect[Input::CHINCH] = this->z906_.status[STATUS_FX_INPUT_2];
-  this->state_.effect[Input::OPTICAL1] = this->z906_.status[STATUS_FX_INPUT_3];
-  this->state_.effect[Input::OPTICAL2] = this->z906_.status[STATUS_FX_INPUT_4];
-  this->state_.effect[Input::COAXIAL] = this->z906_.status[STATUS_FX_INPUT_5];
-  this->state_.effect[Input::AUX] = this->z906_.status[STATUS_FX_INPUT_6];
-  this->state_.master_volume = this->z906_.status[STATUS_MASTER_VOLUME];
-  this->state_.bass_volume = this->z906_.status[STATUS_BASS_VOLUME];
-  this->state_.center_volume = this->z906_.status[STATUS_CENTER_VOLUME];
-  this->state_.rear_volume = this->z906_.status[STATUS_REAR_VOLUME];
-  this->state_.power = this->z906_.status[STATUS_POWER] == 0;
-  this->state_.mute = this->z906_.status[STATUS_MUTE];
-  this->publish_internal_state()
+  this->state_.effect[0] = this->z906_.status[STATUS_FX_INPUT_1];
+  this->state_.effect[1] = this->z906_.status[STATUS_FX_INPUT_2];
+  this->state_.effect[2] = this->z906_.status[STATUS_FX_INPUT_3];
+  this->state_.effect[3] = this->z906_.status[STATUS_FX_INPUT_4];
+  this->state_.effect[4] = this->z906_.status[STATUS_FX_INPUT_5];
+  this->state_.effect[5] = this->z906_.status[STATUS_FX_INPUT_AUX];
+  this->state_.master_volume = this->z906_.status[STATUS_MAIN_LEVEL];
+  this->state_.bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
+  this->state_.center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
+  this->state_.rear_volume = this->z906_.status[STATUS_REAR_LEVEL];
+  this->state_.power = this->z906_.status[STATUS_STBY] == 0;
+  this->publish_internal_state();
 }
 
 void LogitechZ906Component::publish_internal_state() {
@@ -95,19 +94,19 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       this->state_.effect[this->state_.input] = Effect::EFFECT_41;
       this->effect_->publish_state(effect_to_string(Effect::EFFECT_41));
       break;
-    case LEVEL_MASTER_UP:
+    case LEVEL_MAIN_UP:
       this->state_.master_volume += this->state_.master_volume < 43 ? 1 : 0;
       this->master_volume_->publish_state(this->state_.master_volume);
       break;
-    case LEVEL_MASTER_DOWN:
+    case LEVEL_MAIN_DOWN:
       this->state_.master_volume -= this->state_.master_volume > 0 ? 1 : 0;
       this->master_volume_->publish_state(this->state_.master_volume);
       break;
-    case LEVEL_BASS_UP:
+    case LEVEL_SUB_UP:
       this->state_.bass_volume += this->state_.bass_volume < 43 ? 1 : 0;
       this->bass_volume_->publish_state(this->state_.bass_volume + 1);
       break;
-    case LEVEL_BASS_DOWN:
+    case LEVEL_SUB_DOWN:
       this->state_.bass_volume -= this->state_.bass_volume > 0 ? 1 : 0;
       this->bass_volume_->publish_state(this->state_.bass_volume - 1);
       break;

@@ -29,6 +29,7 @@ struct State{
             case EFFECT_41:
                 return "4.1";
         }
+        return "None";
     }
 
     // get String representation of input
@@ -47,6 +48,7 @@ struct State{
             case AUX:
                 return "Aux";
         }
+        return "Line";
     }
 
     inline Effect string_to_effect(const std::string &input){
