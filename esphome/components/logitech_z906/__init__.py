@@ -29,7 +29,6 @@ CONFIG_SCHEMA = cv.All(
         cv.Required(CONF_CONSOLE_UART_ID): cv.use_id(uart.UARTComponent),
         })
     .extend(cv.COMPONENT_SCHEMA)
-    .extend(uart.UART_DEVICE_SCHEMA)
 )
 
 
