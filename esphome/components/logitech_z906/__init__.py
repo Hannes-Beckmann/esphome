@@ -35,8 +35,8 @@ CONFIG_SCHEMA = cv.All(
 async def to_code(config):
     var = cg.new_Pvariable(config[CONF_ID])
     await cg.register_component(var, config)
-    amplifier_uart = cg.get_variable(config[CONF_AMPLIFIER_UART_ID])
-    console_uart = cg.get_variable(config[CONF_CONSOLE_UART_ID])
+    amplifier_uart = await cg.get_variable(config[CONF_AMPLIFIER_UART_ID])
+    console_uart = await cg.get_variable(config[CONF_CONSOLE_UART_ID])
     cg.add(var.set_amplifier_uart(amplifier_uart))
     cg.add(var.set_console_uart(console_uart))
 
