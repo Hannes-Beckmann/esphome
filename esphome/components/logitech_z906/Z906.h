@@ -84,8 +84,8 @@ class Z906 {
  public:
   Z906();
 
-  void set_amplifier_uart(uart::UARTDevice *uart);
-  void set_console_uart(uart::UARTDevice *uart);
+  void set_amplifier_uart(uart::UARTComponent *uart);
+  void set_console_uart(uart::UARTComponent *uart);
 
   int cmd(uint8_t);
   int cmd(uint8_t, uint8_t);

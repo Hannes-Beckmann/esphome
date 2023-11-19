@@ -6,12 +6,12 @@ namespace logitech_z906 {
 
 Z906::Z906() {}
 
-void Z906::set_amplifier_uart(uart::UARTDevice *uart) {
+void Z906::set_amplifier_uart(uart::UARTComponent *uart) {
   this->amplifier_uart_ = uart;
   // dev_serial->begin(BAUD_RATE,SERIAL_CONFIG);
 }
 
-void Z906::set_console_uart(uart::UARTDevice *uart) {
+void Z906::set_console_uart(uart::UARTComponent *uart) {
   this->console_uart_ = uart;
   // dev_serial->begin(BAUD_RATE,SERIAL_CONFIG);
 }
