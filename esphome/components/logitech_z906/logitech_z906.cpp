@@ -34,12 +34,14 @@ void LogitechZ906Component::feed_console() {
         uint8_t data = 0;
         this->console_uart_->read_byte(&data);
         this->amplifier_uart_->write_byte(data);
+        ESP_LOGD(TAG, "Con: %i", data);
         last_console_time = millis();
       }
       if (this->amplifier_uart_->available()) {
         uint8_t data = 0;
         this->amplifier_uart_->read_byte(&data);
         this->console_uart_->write_byte(data);
+        ESP_LOGD(TAG, "Amp: %i", data);
         last_amplifier_time = millis();
       }
     }
