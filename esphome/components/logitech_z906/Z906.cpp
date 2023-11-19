@@ -30,7 +30,7 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
 
 
 int Z906::update() {
-  this->amplifier_uart_->write(GET_STATUS);
+  this->amplifier_uart_->write_byte(GET_STATUS);
 
   unsigned long currentMillis = millis();
 
@@ -39,7 +39,9 @@ int Z906::update() {
       return 0;
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
-    status[i] = this->amplifier_uart_->read();
+    uint8_t data;
+    this->amplifier_uart_->read_byte(&data);
+    status[i] = data;
 
   if (status[STATUS_STX] != EXP_STX)
     return 0;
@@ -64,15 +66,16 @@ int Z906::request(uint8_t cmd) {
 }
 
 int Z906::cmd(uint8_t cmd) {
-  this->amplifier_uart_->write(cmd);
+  this->amplifier_uart_->write_byte(cmd);
 
   unsigned long currentMillis = millis();
 
   while (this->amplifier_uart_->available() == 0)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
-
-  return this->amplifier_uart_->read();
+  uint8_t data;
+  this->amplifier_uart_->read_byte(&data);
+  return data;
 }
 
 int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
@@ -83,7 +86,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
   status[STATUS_CHECKSUM] = LRC(status, STATUS_TOTAL_LENGTH);
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
-    this->amplifier_uart_->write(status[i]);
+    this->amplifier_uart_->write_byte(status[i]);
 
   unsigned long currentMillis = millis();
 
@@ -92,7 +95,8 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
       return 0;
 
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++)
-    this->amplifier_uart_->read();
+    uint8_t data;
+    this->amplifier_uart_->read_byte(&data);
   return 1;
 }
 
@@ -105,7 +109,7 @@ void Z906::log_status() {
 }
 
 uint8_t Z906::main_sensor() {
-  this->amplifier_uart_->write(GET_TEMP);
+  this->amplifier_uart_->write_byte(GET_TEMP);
 
   unsigned long currentMillis = millis();
 
@@ -116,7 +120,9 @@ uint8_t Z906::main_sensor() {
   uint8_t temp[TEMP_TOTAL_LENGTH];
 
   for (int i = 0; i < TEMP_TOTAL_LENGTH; i++)
-    temp[i] = this->amplifier_uart_->read();
+    uint8_t data;
+    this->amplifier_uart_->read_byte(&data);
+    temp[i] = data;
 
   if (temp[2] != EXP_MODEL_TEMP)
     return 0;

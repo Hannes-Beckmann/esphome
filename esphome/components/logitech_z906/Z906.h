@@ -95,8 +95,8 @@ class Z906 {
   uint8_t main_sensor();
 
  protected:
-  uart::UARTDevice *amplifier_uart_;
-  uart::UARTDevice *console_uart_;
+  uart::UARTComponent *amplifier_uart_;
+  uart::UARTComponent *console_uart_;
 
   const uint8_t EXP_STX = 0xAA;
   const uint8_t EXP_MODEL_STATUS = 0x0A;
