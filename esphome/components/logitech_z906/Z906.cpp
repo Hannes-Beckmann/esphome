@@ -36,6 +36,10 @@ int Z906::update() {
   ESP_LOGD(TAG, "Middle: %x", GET_STATUS);
   this->amplifier_uart_->write_byte(GET_STATUS);
 
+  this->receive_status();
+}
+
+int Z906::receive_status() {
   unsigned long currentMillis = millis();
 
   while (this->amplifier_uart_->available() < STATUS_TOTAL_LENGTH)
@@ -69,6 +73,8 @@ int Z906::request(uint8_t cmd) {
   }
   return 0;
 }
+
+
 
 int Z906::cmd(uint8_t cmd) {
   ESP_LOGD(TAG, "Single cmd");

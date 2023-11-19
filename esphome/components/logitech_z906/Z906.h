@@ -64,6 +64,36 @@ namespace logitech_z906 {
 #define GET_PWR_UP_TIME 0x31
 #define GET_STATUS 0x34
 
+// Status
+
+#define EXP_STX = 0xAA
+#define EXP_MODEL_STATUS = 0x0A
+#define EXP_MODEL_TEMP = 0x0C
+
+#define STATUS_STX = 0x00
+#define STATUS_MODEL = 0x01
+#define STATUS_LENGTH = 0x02
+#define STATUS_MAIN_LEVEL = 0x03
+#define STATUS_READ_LEVEL = 0x04
+#define STATUS_CENTER_LEVEL = 0x05
+#define STATUS_SUB_LEVEL = 0x06
+#define STATUS_CURRENT_INPUT = 0x07
+#define STATUS_UNKNOWN = 0x08
+#define STATUS_FX_INPUT_4 = 0x09
+#define STATUS_FX_INPUT_5 = 0x0A
+#define STATUS_FX_INPUT_2 = 0x0B
+#define STATUS_FX_INPUT_AUX = 0x0C
+#define STATUS_FX_INPUT_1 = 0x0D
+#define STATUS_FX_INPUT_3 = 0x0E
+#define STATUS_SPDIF_STATUS = 0x0F
+#define STATUS_SIGNAL_STATUS = 0x10
+#define STATUS_VER_A = 0x11
+#define STATUS_VER_B = 0x12
+#define STATUS_VER_C = 0x13
+#define STATUS_STBY = 0x14
+#define STATUS_AUTO_STBY = 0x15
+#define STATUS_CHECKSUM = 0x16
+
 // MASK
 
 // #define EFFECT_3D 0x00
@@ -93,42 +123,15 @@ class Z906 {
   void log_status();
 
   uint8_t main_sensor();
-
+  uint8_t status[STATUS_TOTAL_LENGTH];
+  
  protected:
   uart::UARTComponent *amplifier_uart_;
   uart::UARTComponent *console_uart_;
 
-  const uint8_t EXP_STX = 0xAA;
-  const uint8_t EXP_MODEL_STATUS = 0x0A;
-  const uint8_t EXP_MODEL_TEMP = 0x0C;
-
-  const uint8_t STATUS_STX = 0x00;
-  const uint8_t STATUS_MODEL = 0x01;
-  const uint8_t STATUS_LENGTH = 0x02;
-  const uint8_t STATUS_MAIN_LEVEL = 0x03;
-  const uint8_t STATUS_READ_LEVEL = 0x04;
-  const uint8_t STATUS_CENTER_LEVEL = 0x05;
-  const uint8_t STATUS_SUB_LEVEL = 0x06;
-  const uint8_t STATUS_CURRENT_INPUT = 0x07;
-  const uint8_t STATUS_UNKNOWN = 0x08;
-  const uint8_t STATUS_FX_INPUT_4 = 0x09;
-  const uint8_t STATUS_FX_INPUT_5 = 0x0A;
-  const uint8_t STATUS_FX_INPUT_2 = 0x0B;
-  const uint8_t STATUS_FX_INPUT_AUX = 0x0C;
-  const uint8_t STATUS_FX_INPUT_1 = 0x0D;
-  const uint8_t STATUS_FX_INPUT_3 = 0x0E;
-  const uint8_t STATUS_SPDIF_STATUS = 0x0F;
-  const uint8_t STATUS_SIGNAL_STATUS = 0x10;
-  const uint8_t STATUS_VER_A = 0x11;
-  const uint8_t STATUS_VER_B = 0x12;
-  const uint8_t STATUS_VER_C = 0x13;
-  const uint8_t STATUS_STBY = 0x14;
-  const uint8_t STATUS_AUTO_STBY = 0x15;
-  const uint8_t STATUS_CHECKSUM = 0x16;
-
   int update();
   uint8_t LRC(uint8_t *, uint8_t);
-  uint8_t status[STATUS_TOTAL_LENGTH];
+  
 };
 
 }  // namespace logitech_z906

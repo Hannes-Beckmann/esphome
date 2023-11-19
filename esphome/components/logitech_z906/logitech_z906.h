@@ -6,6 +6,7 @@
 #include "esphome/components/number/number.h"
 #include "esphome/components/switch/switch.h"
 #include "logitech_z906_component_types.h"
+#include "logitech_z906_state.h"
 
 #include "Z906.h"
 
@@ -45,8 +46,10 @@ class LogitechZ906Component : public Component{
   void set_power(bool power);
   void set_mute(bool mute);
 
- protected:
+  void set_internal_state(State state);
 
+ protected:
+  State state_;
   uart::UARTComponent *console_uart_{nullptr};
   uart::UARTComponent *amplifier_uart_{nullptr};
 
