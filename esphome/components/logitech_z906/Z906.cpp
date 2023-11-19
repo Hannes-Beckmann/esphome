@@ -38,11 +38,11 @@ int Z906::update() {
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
-  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
+  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     status[i] = data;
-
+  }
   if (status[STATUS_STX] != EXP_STX)
     return 0;
   if (status[STATUS_MODEL] != EXP_MODEL_STATUS)
@@ -70,9 +70,11 @@ int Z906::cmd(uint8_t cmd) {
 
   unsigned long currentMillis = millis();
 
-  while (this->amplifier_uart_->available() == 0)
-    if (millis() - currentMillis > SERIAL_TIME_OUT)
+  while (this->amplifier_uart_->available() == 0){
+    if (millis() - currentMillis > SERIAL_TIME_OUT){
       return 0;
+    }
+  }
   uint8_t data = 0;
   this->amplifier_uart_->read_byte(&data);
   return data;
@@ -94,9 +96,10 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
-  for (int i = 0; i < ACK_TOTAL_LENGTH; i++)
+  for (int i = 0; i < ACK_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
+  }
   return 1;
 }
 
@@ -119,10 +122,11 @@ uint8_t Z906::main_sensor() {
 
   uint8_t temp[TEMP_TOTAL_LENGTH];
 
-  for (int i = 0; i < TEMP_TOTAL_LENGTH; i++)
+  for (int i = 0; i < TEMP_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     temp[i] = data;
+  }
 
   if (temp[2] != EXP_MODEL_TEMP)
     return 0;
