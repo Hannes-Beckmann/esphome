@@ -10,12 +10,39 @@ float LogitechZ906Component::get_setup_priority() const { return setup_priority:
 
 void LogitechZ906Component::setup() {
   ESP_LOGCONFIG(TAG, "Setting up LogitechZ906...");
-  this->z906_.set_uart(this);
 }
 
-void LogitechZ906Component::loop() {}
+void LogitechZ906Component::loop() {this->feed_console();}
 
 void LogitechZ906Component::dump_config() { ESP_LOGCONFIG(TAG, "LogitechZ906:"); }
+
+void LogitechZ906Component::set_amplifier_uart_parent(uart::UARTComponent *amplifier_uart) {
+  this->amplifier_uart_ = amplifier_uart;
+  this->z906_.set_amplifier_uart(amplifier_uart);
+}
+void LogitechZ906Component::set_console_uart_parent(uart::UARTComponent *console_uart) {
+  this->console_uart_ = console_uart;
+  this->z906_.set_console_uart(console_uart);
+}
+
+void LogitechZ906Component::feed_console() {
+  if (this->console_uart_->available()) {
+    unsigned long last_console_time = millis();
+    unsigned long last_amplifier_time = millis();
+    while (millis() - last_console_time > 50 || millis() - last_amplifier_time > 50) {
+      if (this->console_uart_->available()) {
+        uint8_t data = this->console_uart_->read();
+        this->amplifier_uart_->write(data);
+        last_console_time = millis();
+      }
+      if (this->amplifier_uart_->available()) {
+        uint8_t data = this->amplifier_uart_->read();
+        this->console_uart_->write(data);
+        last_amplifier_time = millis();
+      }
+    }
+  }
+}
 
 void LogitechZ906Component::set_select(SelectType type, select::Select *select) {
   switch (type) {

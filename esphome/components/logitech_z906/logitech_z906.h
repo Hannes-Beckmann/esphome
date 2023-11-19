@@ -12,7 +12,7 @@
 namespace esphome {
 namespace logitech_z906 {
 
-class LogitechZ906Component : public Component, public uart::UARTDevice {
+class LogitechZ906Component : public Component{
  public:
   float get_setup_priority() const override;
 
@@ -20,6 +20,11 @@ class LogitechZ906Component : public Component, public uart::UARTDevice {
   void loop() override;
   void dump_config() override;
 
+  void feed_console();
+
+  void set_amplifier_uart_parent(uart::UARTComponent *amplifier_uart);
+  void set_console_uart_parent(uart::UARTComponent *console_uart);
+  
   void set_select_value(SelectType type, const std::string &value);
   void set_select(SelectType type, select::Select *select);
 
@@ -41,6 +46,10 @@ class LogitechZ906Component : public Component, public uart::UARTDevice {
   void set_mute(bool mute);
 
  protected:
+
+  uart::UARTComponent *console_uart_{nullptr};
+  uart::UARTComponent *amplifier_uart_{nullptr};
+
   select::Select *source_;
   select::Select *effect_;
 

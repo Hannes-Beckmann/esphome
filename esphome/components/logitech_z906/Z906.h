@@ -7,7 +7,7 @@ namespace logitech_z906 {
 
 #define BAUD_RATE 57600
 #define SERIAL_CONFIG SERIAL_8O1
-#define SERIAL_TIME_OUT 1000
+#define SERIAL_TIME_OUT 100
 
 #define STATUS_TOTAL_LENGTH 0x17
 #define ACK_TOTAL_LENGTH 0x05
@@ -84,7 +84,8 @@ class Z906 {
  public:
   Z906();
 
-  void set_uart(uart::UARTDevice *uart);
+  void set_amplifier_uart(uart::UARTDevice *uart);
+  void set_console_uart(uart::UARTDevice *uart);
 
   int cmd(uint8_t);
   int cmd(uint8_t, uint8_t);
@@ -94,7 +95,8 @@ class Z906 {
   uint8_t main_sensor();
 
  protected:
-  uart::UARTDevice *uart_;
+  uart::UARTDevice *amplifier_uart_;
+  uart::UARTDevice *console_uart_;
 
   const uint8_t EXP_STX = 0xAA;
   const uint8_t EXP_MODEL_STATUS = 0x0A;

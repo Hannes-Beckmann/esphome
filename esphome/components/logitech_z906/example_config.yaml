@@ -1,13 +1,22 @@
 uart:
-  rx_pin: GPIO3
-  tx_pin: GPIO1
-  baud_rate: 57600
-  parity: ODD
-  stop_bits: 1
-  
+  - id: console_uart
+    rx_pin: GPIO3
+    tx_pin: GPIO1
+    baud_rate: 57600
+    parity: ODD
+    stop_bits: 1
+
+  - id: console_uart
+    rx_pin: GPIO16
+    tx_pin: GPIO17
+    baud_rate: 57600
+    parity: ODD
+    stop_bits: 1
 
 logitech_z906:
   id: logitechid
+  amplifier_uart_id: console_uart
+  console_uart_id: console_uart
 
 
 select:

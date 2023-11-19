@@ -6,8 +6,13 @@ namespace logitech_z906 {
 
 Z906::Z906() {}
 
-void Z906::set_uart(uart::UARTDevice *uart) {
-  this->uart_ = uart;
+void Z906::set_amplifier_uart(uart::UARTDevice *uart) {
+  this->amplifier_uart_ = uart;
+  // dev_serial->begin(BAUD_RATE,SERIAL_CONFIG);
+}
+
+void Z906::set_console_uart(uart::UARTDevice *uart) {
+  this->console_uart_ = uart;
   // dev_serial->begin(BAUD_RATE,SERIAL_CONFIG);
 }
 
@@ -22,17 +27,19 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
   return LRC;
 }
 
+
+
 int Z906::update() {
-  this->uart_->write(GET_STATUS);
+  this->amplifier_uart_->write(GET_STATUS);
 
   unsigned long currentMillis = millis();
 
-  while (this->uart_->available() < STATUS_TOTAL_LENGTH)
+  while (this->amplifier_uart_->available() < STATUS_TOTAL_LENGTH)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
-    status[i] = this->uart_->read();
+    status[i] = this->amplifier_uart_->read();
 
   if (status[STATUS_STX] != EXP_STX)
     return 0;
@@ -57,15 +64,15 @@ int Z906::request(uint8_t cmd) {
 }
 
 int Z906::cmd(uint8_t cmd) {
-  this->uart_->write(cmd);
+  this->amplifier_uart_->write(cmd);
 
   unsigned long currentMillis = millis();
 
-  while (this->uart_->available() == 0)
+  while (this->amplifier_uart_->available() == 0)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
-  return this->uart_->read();
+  return this->amplifier_uart_->read();
 }
 
 int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
@@ -76,16 +83,16 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
   status[STATUS_CHECKSUM] = LRC(status, STATUS_TOTAL_LENGTH);
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
-    this->uart_->write(status[i]);
+    this->amplifier_uart_->write(status[i]);
 
   unsigned long currentMillis = millis();
 
-  while (this->uart_->available() < ACK_TOTAL_LENGTH)
+  while (this->amplifier_uart_->available() < ACK_TOTAL_LENGTH)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++)
-    this->uart_->read();
+    this->amplifier_uart_->read();
   return 1;
 }
 
@@ -98,18 +105,18 @@ void Z906::log_status() {
 }
 
 uint8_t Z906::main_sensor() {
-  this->uart_->write(GET_TEMP);
+  this->amplifier_uart_->write(GET_TEMP);
 
   unsigned long currentMillis = millis();
 
-  while (this->uart_->available() < TEMP_TOTAL_LENGTH)
+  while (this->amplifier_uart_->available() < TEMP_TOTAL_LENGTH)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
   uint8_t temp[TEMP_TOTAL_LENGTH];
 
   for (int i = 0; i < TEMP_TOTAL_LENGTH; i++)
-    temp[i] = this->uart_->read();
+    temp[i] = this->amplifier_uart_->read();
 
   if (temp[2] != EXP_MODEL_TEMP)
     return 0;
