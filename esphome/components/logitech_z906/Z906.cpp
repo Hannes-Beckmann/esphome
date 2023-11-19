@@ -95,10 +95,10 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
 
   status[STATUS_CHECKSUM] = LRC(status, STATUS_TOTAL_LENGTH);
 
-  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
+  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
     this->amplifier_uart_->write_byte(status[i]);
     ESP_LOGD(TAG, "Middle: %i", status[i]);
-
+  }
   unsigned long currentMillis = millis();
 
   while (this->amplifier_uart_->available() < ACK_TOTAL_LENGTH)
