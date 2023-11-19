@@ -4,6 +4,8 @@
 namespace esphome {
 namespace logitech_z906 {
 
+static const char *const TAG = "logitech_z906";
+
 Z906::Z906() {}
 
 void Z906::set_amplifier_uart(uart::UARTComponent *uart) {
