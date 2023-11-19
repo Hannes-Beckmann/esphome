@@ -39,7 +39,7 @@ int Z906::update() {
       return 0;
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++)
-    uint8_t data;
+    uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     status[i] = data;
 
@@ -73,7 +73,7 @@ int Z906::cmd(uint8_t cmd) {
   while (this->amplifier_uart_->available() == 0)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
-  uint8_t data;
+  uint8_t data = 0;
   this->amplifier_uart_->read_byte(&data);
   return data;
 }
@@ -95,7 +95,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
       return 0;
 
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++)
-    uint8_t data;
+    uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
   return 1;
 }
@@ -120,7 +120,7 @@ uint8_t Z906::main_sensor() {
   uint8_t temp[TEMP_TOTAL_LENGTH];
 
   for (int i = 0; i < TEMP_TOTAL_LENGTH; i++)
-    uint8_t data;
+    uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     temp[i] = data;
 
