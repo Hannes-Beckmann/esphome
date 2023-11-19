@@ -37,6 +37,6 @@ async def to_code(config):
     await cg.register_component(var, config)
     amplifier_uart = await cg.get_variable(config[CONF_AMPLIFIER_UART_ID])
     console_uart = await cg.get_variable(config[CONF_CONSOLE_UART_ID])
-    cg.add(var.set_amplifier_uart(amplifier_uart))
-    cg.add(var.set_console_uart(console_uart))
+    cg.add(var.set_amplifier_uart_parent(amplifier_uart))
+    cg.add(var.set_console_uart_parent(console_uart))
 
