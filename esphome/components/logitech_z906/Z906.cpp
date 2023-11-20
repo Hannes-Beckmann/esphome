@@ -36,7 +36,7 @@ int Z906::update() {
   ESP_LOGD(TAG, "Middle: %x", GET_STATUS);
   this->amplifier_uart_->write_byte(GET_STATUS);
 
-  this->receive_status();
+  return this->receive_status();
 }
 
 int Z906::receive_status() {
