@@ -173,7 +173,7 @@ void LogitechZ906Component::feed_console() {
       }
     }
     if (cmd != 0) {
-      if(cmd = GET_STATUS){
+      if(cmd == GET_STATUS){
         this->update_internal_state();
       }
       else{
