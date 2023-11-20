@@ -11,7 +11,6 @@ void LogitechZ906Number::set_number_type(const std::string &type) { this->type_ 
 void LogitechZ906Number::registrate() { this->parent_->set_volume_number(this->type_, this); }
 void LogitechZ906Number::control(float value) {
   this->parent_->set_number_value(this->type_, value);
-  publish_state(value);
 }
 
 }  // namespace logitech_z906
