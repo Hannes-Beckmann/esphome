@@ -56,6 +56,9 @@ class LogitechZ906Component : public Component{
 
  protected:
   State state_;
+
+  bool do_synchronization = false;
+
   uart::UARTComponent *console_uart_{nullptr};
   uart::UARTComponent *amplifier_uart_{nullptr};
 
