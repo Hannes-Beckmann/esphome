@@ -104,27 +104,27 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       break;
     case LEVEL_SUB_UP:
       this->state_.bass_volume += this->state_.bass_volume < 43 ? 1 : 0;
-      this->bass_volume_->publish_state(this->state_.bass_volume + 1);
+      this->bass_volume_->publish_state(this->state_.bass_volume);
       break;
     case LEVEL_SUB_DOWN:
       this->state_.bass_volume -= this->state_.bass_volume > 0 ? 1 : 0;
-      this->bass_volume_->publish_state(this->state_.bass_volume - 1);
+      this->bass_volume_->publish_state(this->state_.bass_volume);
       break;
     case LEVEL_CENTER_UP:
       this->state_.center_volume += this->state_.center_volume < 43 ? 1 : 0;
-      this->center_volume_->publish_state(this->state_.center_volume + 1);
+      this->center_volume_->publish_state(this->state_.center_volume);
       break;
     case LEVEL_CENTER_DOWN:
       this->state_.center_volume -= this->state_.center_volume > 0 ? 1 : 0;
-      this->center_volume_->publish_state(this->state_.center_volume - 1);
+      this->center_volume_->publish_state(this->state_.center_volume);
       break;
     case LEVEL_REAR_UP:
       this->state_.rear_volume += this->state_.rear_volume < 43 ? 1 : 0;
-      this->rear_volume_->publish_state(this->state_.rear_volume + 1);
+      this->rear_volume_->publish_state(this->state_.rear_volume);
       break;
     case LEVEL_REAR_DOWN:
       this->state_.rear_volume -= this->state_.rear_volume > 0 ? 1 : 0;
-      this->rear_volume_->publish_state(this->state_.rear_volume - 1);
+      this->rear_volume_->publish_state(this->state_.rear_volume);
       break;
     case MUTE_ON:
       this->state_.mute = true;
@@ -150,7 +150,6 @@ void LogitechZ906Component::feed_console() {
     unsigned long last_console_time = millis();
     unsigned long last_amplifier_time = millis();
     uint8_t status[STATUS_TOTAL_LENGTH];
-    uint8_t cmd = 0;
     this->amplifier_uart_->flush();
     while (millis() - last_console_time < 50 || millis() - last_amplifier_time < 50) {
       if (this->console_uart_->available()) {
@@ -160,8 +159,11 @@ void LogitechZ906Component::feed_console() {
         ESP_LOGD(TAG, "Feed Con: %x", data);
         if (data == GET_STATUS) {
           this->z906_.receive_status();
+          this->do_synchronization = true;
         }
-        cmd = data != RESET_PWR_UP_TIME ? data : cmd;
+        else if (data != RESET_PWR_UP_TIME && data != GET_PWR_UP_TIME) {
+          this->synchronize_console_command(data);
+        }
         last_console_time = millis();
       }
       if (this->amplifier_uart_->available()) {
@@ -172,18 +174,11 @@ void LogitechZ906Component::feed_console() {
         last_amplifier_time = millis();
       }
     }
-    if (cmd != 0) {
-      if(cmd == GET_STATUS){
-        this->update_internal_state();
-      }
-      else{
-        this->synchronize_console_command(cmd);
-      }
-    }
   }
   else{
     if (this->do_synchronization) {
       this->do_synchronization = false;
+      this->update_internal_state();
       this->publish_internal_state();
     }
   }
