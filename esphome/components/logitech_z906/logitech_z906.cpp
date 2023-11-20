@@ -183,7 +183,7 @@ void LogitechZ906Component::feed_console() {
     }
     if (this->force_update) {
       this->force_update = false;
-      this->uart_->update();
+      this->z906_->update();
     }
     
   }
