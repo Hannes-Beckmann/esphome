@@ -26,7 +26,7 @@ void LogitechZ906Component::set_console_uart_parent(uart::UARTComponent *console
 }
 
 void LogitechZ906Component::update_internal_state() {
-  this->state_.input = this->z906_.status[STATUS_CURRENT_INPUT];
+  this->state_.input = (Input)this->z906_.status[STATUS_CURRENT_INPUT];
   this->state_.effect[0] = (Effect)this->z906_.status[STATUS_FX_INPUT_1];
   this->state_.effect[1] = (Effect)this->z906_.status[STATUS_FX_INPUT_2];
   this->state_.effect[2] = (Effect)this->z906_.status[STATUS_FX_INPUT_3];
@@ -36,7 +36,7 @@ void LogitechZ906Component::update_internal_state() {
   this->state_.master_volume = this->z906_.status[STATUS_MAIN_LEVEL];
   this->state_.bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
   this->state_.center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
-  this->state_.rear_volume = this->z906_.status[STATUS_REAR_LEVEL];
+  this->state_.rear_volume = this->z906_.status[STATUS_READ_LEVEL];
   this->state_.power = this->z906_.status[STATUS_STBY] == 0;
   this->publish_internal_state();
 }
