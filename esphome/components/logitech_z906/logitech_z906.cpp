@@ -162,6 +162,7 @@ void LogitechZ906Component::feed_console() {
         }
         else if (data != RESET_PWR_UP_TIME && data != GET_PWR_UP_TIME) {
           this->synchronize_console_command(data);
+          this->force_update = true;
         }
         last_console_time = millis();
       }
@@ -180,6 +181,11 @@ void LogitechZ906Component::feed_console() {
       this->update_internal_state();
       this->publish_internal_state();
     }
+    if (this->force_update) {
+      this->force_update = false;
+      this->uart_->update();
+    }
+    
   }
 }
 
