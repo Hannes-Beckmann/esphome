@@ -312,7 +312,7 @@ void LogitechZ906Component::set_effect(const std::string &effect) {
 
 void LogitechZ906Component::set_volume_rear(float volume) {
   ESP_LOGD(TAG, "Setting rear volume to %f", volume);
-  uint8_t amount = ((uint8_t) volume) - this->state_.rear_volume;
+  int8_t amount = ((uint8_t) volume) - this->state_.rear_volume;
   uint8_t cmd = amount > 0 ? LEVEL_REAR_UP : LEVEL_REAR_DOWN;
   this->turn_volume(cmd, amount);
   this->state_.rear_volume += amount;
@@ -320,7 +320,7 @@ void LogitechZ906Component::set_volume_rear(float volume) {
 }
 void LogitechZ906Component::set_volume_center(float volume) {
   ESP_LOGD(TAG, "Setting center volume to %f", volume);
-  uint8_t amount = ((uint8_t) volume) - this->state_.center_volume;
+  int8_t amount = ((uint8_t) volume) - this->state_.center_volume;
   uint8_t cmd = amount > 0 ? LEVEL_CENTER_UP : LEVEL_CENTER_DOWN;
   this->turn_volume(cmd, amount);
   this->state_.center_volume += amount;
@@ -328,7 +328,7 @@ void LogitechZ906Component::set_volume_center(float volume) {
 }
 void LogitechZ906Component::set_volume_bass(float volume) {
   ESP_LOGD(TAG, "Setting bass volume to %f", volume);
-  uint8_t amount = ((uint8_t) volume) - this->state_.bass_volume;
+  int8_t amount = ((uint8_t) volume) - this->state_.bass_volume;
   uint8_t cmd = amount > 0 ? LEVEL_SUB_UP : LEVEL_SUB_DOWN;
   this->turn_volume(cmd, amount);
   this->state_.bass_volume += amount;
@@ -336,7 +336,7 @@ void LogitechZ906Component::set_volume_bass(float volume) {
 }
 void LogitechZ906Component::set_volume_master(float volume) {
   ESP_LOGD(TAG, "Setting master volume to %f", volume);
-  uint8_t amount = ((uint8_t) volume) - this->state_.master_volume;
+  int8_t amount = ((uint8_t) volume) - this->state_.master_volume;
   uint8_t cmd = amount > 0 ? LEVEL_MAIN_UP : LEVEL_MAIN_DOWN;
   this->turn_volume(cmd, amount);
   this->state_.master_volume += amount;
