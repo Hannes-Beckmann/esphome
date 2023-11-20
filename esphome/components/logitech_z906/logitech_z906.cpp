@@ -162,7 +162,6 @@ void LogitechZ906Component::feed_console() {
         }
         else if (data != RESET_PWR_UP_TIME && data != GET_PWR_UP_TIME) {
           this->synchronize_console_command(data);
-          this->force_update = true;
         }
         last_console_time = millis();
       }
@@ -229,6 +228,7 @@ void LogitechZ906Component::set_volume_number(NumberType type, number::Number *n
 }
 
 void LogitechZ906Component::set_number_value(NumberType type, float value) {
+  this->force_update = true;
   switch (type) {
     case MASTER:
       this->set_volume_master(value);
