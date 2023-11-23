@@ -35,7 +35,8 @@ int Z906::update(bool quiet) {
   ESP_LOGD(TAG, "Fetch update");
   ESP_LOGD(TAG, "Middle: %x", GET_STATUS);
   while (this->amplifier_uart_->available()){
-    this->amplifier_uart_->read_byte();
+    uint8_t data = 0;
+    this->amplifier_uart_->read_byte(data);
   }
   this->amplifier_uart_->write_byte(GET_STATUS);
   unsigned long currentMillis = millis();

@@ -209,19 +209,18 @@ void LogitechZ906Component::feed_console() {
     unsigned long last_console_time = millis();
     unsigned long last_amplifier_time = millis();
     uint8_t status[STATUS_TOTAL_LENGTH];
+    uint8_t data = 0;
     while (this->console_uart_->available()){
-      this->console_uart_->read_byte();
+      this->console_uart_->read_byte(data);
     }
     
     while (millis() - last_console_time < 50 || millis() - last_amplifier_time < 50) {
       if (this->console_uart_->available()) {
-        uint8_t data = 0;
         this->console_uart_->read_byte(&data);
         this->synchronize_console_command(data);
         last_console_time = millis();
       }
       if (this->amplifier_uart_->available()) {
-        uint8_t data = 0;
         this->amplifier_uart_->read_byte(&data);
         this->console_uart_->write_byte(data);
         ESP_LOGD(TAG, "Feed Amp: %x", data);
