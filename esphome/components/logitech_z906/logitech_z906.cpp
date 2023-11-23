@@ -412,7 +412,7 @@ void LogitechZ906Component::set_power(bool power) {
     this->z906_.cmd(cmd);
     this->z906_.cmd(cmd);
     this->set_mute(false);
-    this->state_.power = false;
+    this->state_.power = power;
   }
 }
 void LogitechZ906Component::set_mute(bool mute) {
