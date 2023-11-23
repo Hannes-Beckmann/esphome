@@ -44,8 +44,8 @@ class LogitechZ906Component : public Component{
   void set_power(bool power);
   void set_mute(bool mute);
 
-  void update_internal_state();
-  void publish_internal_state();
+  void update_internal_state(State* state);
+  void publish_internal_state(State* state);
 
   void synchronize_console_command(uint8_t cmd);
   void synchronize_volume_command(float* console_volume, float* amplifier_volume, uint8_t cmd, int8_t direction);

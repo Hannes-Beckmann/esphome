@@ -349,7 +349,7 @@ void LogitechZ906Component::set_source(const std::string &source) {
       this->z906_.cmd(SELECT_INPUT_5);
       break;
   this->state_.input = input;
-  this->input_->publish_state(source);
+  this->source_->publish_state(source);
   }
 }
 
@@ -376,7 +376,7 @@ void LogitechZ906Component::set_effect(const std::string &effect) {
 }
 
 void LogitechZ906Component::set_volume(float* current_volume, float value, uint8_t cmd_up, uint8_t cmd_down) {
-  int8_t amount = ((uint8_t) volume) - *current_volume;
+  int8_t amount = ((uint8_t) value) - *current_volume;
   uint8_t cmd = amount > 0 ? cmd_up : cmd_down;
   if (amount < 0) {
     for (int i = 0; i > amount; i--) {
