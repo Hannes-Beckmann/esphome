@@ -192,6 +192,7 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       this->power_->publish_state(false);
       break;
     case GET_STATUS:
+      this->amplifier_uart_->flush();
       this->amplifier_uart_->write_byte(cmd);
       this->z906_.receive_status();
       this->do_synchronization_when_communication_clear = true;
@@ -376,15 +377,19 @@ void LogitechZ906Component::set_effect(const std::string &effect) {
 }
 
 void LogitechZ906Component::set_volume(float* current_volume, float value, uint8_t cmd_up, uint8_t cmd_down) {
+  ESP_LOGD(TAG, "Setting volume to %f", value);
   int8_t amount = ((uint8_t) value) - *current_volume;
+  ESP_LOGD(TAG, "Amount: %d", amount);
   uint8_t cmd = amount > 0 ? cmd_up : cmd_down;
   if (amount < 0) {
     for (int i = 0; i > amount; i--) {
+      ESP_LOGD(TAG, "Iteration: %d", i);
       this->z906_.cmd(cmd_down);
       delay(20);
     }
   } else {
     for (int i = 0; i < amount; i++) {
+      ESP_LOGD(TAG, "Iteration: %d", i);
       this->z906_.cmd(cmd_up);
       delay(20);
     }
