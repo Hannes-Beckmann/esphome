@@ -323,6 +323,7 @@ void LogitechZ906Component::set_switch_state(SwitchType type, bool state) {
     case POWER:
       this->set_power(state);
       this->power_->publish_state(this->state_.power);
+      ESP_LOGD(TAG, "Setting source to %s", x ? "true" : "false");
       break;
     case MUTE:
       this->set_mute(state);
@@ -408,6 +409,7 @@ void LogitechZ906Component::set_power(bool power) {
     if (this->state_.master_volume > 0) {
       this->set_mute(true);
     }
+    this->z906_.cmd(cmd);
     this->z906_.cmd(cmd);
     this->set_mute(false);
     this->state_.power = false;
