@@ -31,7 +31,7 @@ namespace logitech_z906 {
 #define LEVEL_REAR_UP 0x0E
 #define LEVEL_REAR_DOWN 0x0F
 
-#define PWM_OFF 0x10
+#define PWM_OFF 0x36
 #define PWM_ON 0x11
 
 #define SELECT_EFFECT_3D 0x14
