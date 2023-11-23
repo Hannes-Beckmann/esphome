@@ -26,18 +26,18 @@ void LogitechZ906Component::set_console_uart_parent(uart::UARTComponent *console
 }
 
 void LogitechZ906Component::update_internal_state(State* state) {
-  this->state_.input = (Input)this->z906_.status[STATUS_CURRENT_INPUT];
-  this->state_.effect[0] = (Effect)this->z906_.status[STATUS_FX_INPUT_1];
-  this->state_.effect[1] = (Effect)this->z906_.status[STATUS_FX_INPUT_2];
-  this->state_.effect[2] = (Effect)this->z906_.status[STATUS_FX_INPUT_3];
-  this->state_.effect[3] = (Effect)this->z906_.status[STATUS_FX_INPUT_4];
-  this->state_.effect[4] = (Effect)this->z906_.status[STATUS_FX_INPUT_5];
-  this->state_.effect[5] = (Effect)this->z906_.status[STATUS_FX_INPUT_AUX];
-  this->state_.master_volume = this->z906_.status[STATUS_MAIN_LEVEL];
-  this->state_.bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
-  this->state_.center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
-  this->state_.rear_volume = this->z906_.status[STATUS_READ_LEVEL];
-  this->state_.power = this->z906_.status[STATUS_STBY] == 0;
+  state->input = (Input)this->z906_.status[STATUS_CURRENT_INPUT];
+  state->effect[0] = (Effect)this->z906_.status[STATUS_FX_INPUT_1];
+  state->effect[1] = (Effect)this->z906_.status[STATUS_FX_INPUT_2];
+  state->effect[2] = (Effect)this->z906_.status[STATUS_FX_INPUT_3];
+  state->effect[3] = (Effect)this->z906_.status[STATUS_FX_INPUT_4];
+  state->effect[4] = (Effect)this->z906_.status[STATUS_FX_INPUT_5];
+  state->effect[5] = (Effect)this->z906_.status[STATUS_FX_INPUT_AUX];
+  state->master_volume = this->z906_.status[STATUS_MAIN_LEVEL];
+  state->bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
+  state->center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
+  state->rear_volume = this->z906_.status[STATUS_READ_LEVEL];
+  state->power = this->z906_.status[STATUS_STBY] == 0;
 }
 
 void LogitechZ906Component::publish_internal_state() {
