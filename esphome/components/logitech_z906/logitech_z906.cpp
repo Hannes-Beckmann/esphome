@@ -214,7 +214,7 @@ void LogitechZ906Component::feed_console() {
       this->amplifier_uart_->read_byte(&data);
     }
     
-    while (millis() - last_console_time < 50 || millis() - last_amplifier_time < 50) {
+    while (millis() - last_console_time < 100 || millis() - last_amplifier_time < 100) {
       if (this->console_uart_->available()) {
         this->console_uart_->read_byte(&data);
         ESP_LOGD(TAG, "Feed Con: %x", data);
