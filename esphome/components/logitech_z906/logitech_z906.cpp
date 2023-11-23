@@ -201,7 +201,7 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
     default:
       this->amplifier_uart_->write_byte(cmd);
   }
-  ESP_LOGD(TAG, "Feed Con: %x", cmd);
+  
 }
 
 void LogitechZ906Component::feed_console() {
@@ -210,13 +210,14 @@ void LogitechZ906Component::feed_console() {
     unsigned long last_amplifier_time = millis();
     uint8_t status[STATUS_TOTAL_LENGTH];
     uint8_t data = 0;
-    while (this->console_uart_->available()){
-      this->console_uart_->read_byte(&data);
+    while (this->amplifier_uart_->available()){
+      this->amplifier_uart_->read_byte(&data);
     }
     
     while (millis() - last_console_time < 50 || millis() - last_amplifier_time < 50) {
       if (this->console_uart_->available()) {
         this->console_uart_->read_byte(&data);
+        ESP_LOGD(TAG, "Feed Con: %x", data);
         this->synchronize_console_command(data);
         last_console_time = millis();
       }
