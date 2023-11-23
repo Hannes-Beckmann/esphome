@@ -31,16 +31,13 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
 
 
 
-int Z906::update() {
+int Z906::update(bool quiet) {
   ESP_LOGD(TAG, "Fetch update");
   ESP_LOGD(TAG, "Middle: %x", GET_STATUS);
-  this->amplifier_uart_->flush();
+  while (this->amplifier_uart_->available()){
+    this->amplifier_uart_->read_byte();
+  }
   this->amplifier_uart_->write_byte(GET_STATUS);
-
-  return this->receive_status();
-}
-
-int Z906::receive_status() {
   unsigned long currentMillis = millis();
 
   while (this->amplifier_uart_->available() < STATUS_TOTAL_LENGTH)
@@ -50,7 +47,7 @@ int Z906::receive_status() {
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
-    this->console_uart_->write_byte(data);
+    if (!quiet){this->console_uart_->write_byte(data);}
     status[i] = data;
     ESP_LOGD(TAG, "Mid Amp: %x", data);
   }

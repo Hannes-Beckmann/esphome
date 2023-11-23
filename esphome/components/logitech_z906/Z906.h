@@ -121,11 +121,10 @@ class Z906 {
   int cmd(uint8_t, uint8_t);
   int request(uint8_t);
   void log_status();
-  int receive_status();
 
   uint8_t main_sensor();
   uint8_t status[STATUS_TOTAL_LENGTH];
-  int update();
+  int update(bool quiet = false);
  protected:
   uart::UARTComponent *amplifier_uart_;
   uart::UARTComponent *console_uart_;

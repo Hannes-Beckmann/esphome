@@ -196,9 +196,7 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       this->power_->publish_state(false);
       break;
     case GET_STATUS:
-      this->amplifier_uart_->flush();
-      this->amplifier_uart_->write_byte(cmd);
-      this->z906_.receive_status();
+      this->z906_.update(false);
       this->do_synchronization_when_communication_clear = true;
     default:
       this->amplifier_uart_->write_byte(cmd);
@@ -211,7 +209,10 @@ void LogitechZ906Component::feed_console() {
     unsigned long last_console_time = millis();
     unsigned long last_amplifier_time = millis();
     uint8_t status[STATUS_TOTAL_LENGTH];
-    this->amplifier_uart_->flush();
+    while (this->console_uart_->available()){
+      this->console_uart_->read_byte();
+    }
+    
     while (millis() - last_console_time < 50 || millis() - last_amplifier_time < 50) {
       if (this->console_uart_->available()) {
         uint8_t data = 0;
@@ -237,7 +238,7 @@ void LogitechZ906Component::feed_console() {
     }
     if (this->force_update) {
       this->force_update = false;
-      this->z906_.update();
+      this->z906_.update(true);
       this->update_internal_state(&(this->state_));
       this->publish_internal_state();
     }
