@@ -34,6 +34,7 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
 int Z906::update() {
   ESP_LOGD(TAG, "Fetch update");
   ESP_LOGD(TAG, "Middle: %x", GET_STATUS);
+  this->amplifier_uart_->flush();
   this->amplifier_uart_->write_byte(GET_STATUS);
 
   return this->receive_status();
