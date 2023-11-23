@@ -38,12 +38,8 @@ class LogitechZ906Component : public Component{
   void set_source(const std::string &source);
   void set_effect(const std::string &effect);
 
-  void set_volume_rear(float volume);
-  void set_volume_center(float volume);
-  void set_volume_bass(float volume);
-  void set_volume_master(float volume);
 
-  void turn_volume(const uint8_t &cmd, int8_t amount);
+  void set_volume(float* current_volume, float value, uint8_t cmd_up, uint8_t cmd_down);
 
   void set_power(bool power);
   void set_mute(bool mute);
@@ -52,12 +48,16 @@ class LogitechZ906Component : public Component{
   void publish_internal_state();
 
   void synchronize_console_command(uint8_t cmd);
+  void synchronize_volume_command(float* console_volume, float* amplifier_volume, uint8_t cmd, int8_t direction);
+  void synchronize_input_command(Input* console_input, Input* amplifier_input, const Input& input_to_set, uint8_t cmd);
+  void synchronize_effect_command(Effect* console_effect, Effect* amplifier_effect, const Effect& effect_to_set, uint8_t cmd);
 
 
  protected:
   State state_;
+  State console_state_;
 
-  bool do_synchronization = false;
+  bool do_synchronization_when_communication_clear = false;
   bool force_update = false;
 
   uart::UARTComponent *console_uart_{nullptr};
