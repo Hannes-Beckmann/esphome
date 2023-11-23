@@ -32,12 +32,13 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
 
 
 int Z906::update(bool quiet) {
-  ESP_LOGD(TAG, "Fetch update");
-  ESP_LOGD(TAG, "Middle: %x", GET_STATUS);
+  ESP_LOGD(TAG, "Fetch update"); 
   while (this->amplifier_uart_->available()){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
+    ESP_LOGD(TAG, "Discard Amp: %x", data);
   }
+  ESP_LOGD(TAG, "-> Amp: %x", GET_STATUS);
   this->amplifier_uart_->write_byte(GET_STATUS);
   unsigned long currentMillis = millis();
 
@@ -48,9 +49,10 @@ int Z906::update(bool quiet) {
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
-    if (!quiet){this->console_uart_->write_byte(data);}
+    ESP_LOGD(TAG, "Amp ->: %x", data);
+    if (!quiet){this->console_uart_->write_byte(data); ESP_LOGD(TAG, "Con ->: %x", data);}
     status[i] = data;
-    ESP_LOGD(TAG, "Mid Amp: %x", data);
+    
   }
   if (status[STATUS_STX] != EXP_STX)
     return 0;
@@ -79,7 +81,7 @@ int Z906::request(uint8_t cmd) {
 int Z906::cmd(uint8_t cmd) {
   ESP_LOGD(TAG, "Single cmd");
   this->amplifier_uart_->write_byte(cmd);
-  ESP_LOGD(TAG, "Middle: %x", cmd);
+  ESP_LOGD(TAG, "-> Amp: %x", cmd);
   unsigned long currentMillis = millis();
 
   while (this->amplifier_uart_->available() == 0){
@@ -89,7 +91,7 @@ int Z906::cmd(uint8_t cmd) {
   }
   uint8_t data = 0;
   this->amplifier_uart_->read_byte(&data);
-  ESP_LOGD(TAG, "Mid Amp: %x", data);
+  ESP_LOGD(TAG, "Amp ->: %x", data);
   return data;
 }
 
@@ -103,7 +105,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
     this->amplifier_uart_->write_byte(status[i]);
-    ESP_LOGD(TAG, "Middle: %x", status[i]);
+   ESP_LOGD(TAG, "-> Amp: %x", status[i]);
   }
   unsigned long currentMillis = millis();
 
@@ -114,7 +116,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
-    ESP_LOGD(TAG, "Mid Amp: %x", data);
+    ESP_LOGD(TAG, "Amp ->: %x", data);
   }
   return 1;
 }
