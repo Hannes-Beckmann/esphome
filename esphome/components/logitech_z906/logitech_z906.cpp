@@ -211,7 +211,7 @@ void LogitechZ906Component::feed_console() {
     uint8_t status[STATUS_TOTAL_LENGTH];
     uint8_t data = 0;
     while (this->console_uart_->available()){
-      this->console_uart_->read_byte(data);
+      this->console_uart_->read_byte(&data);
     }
     
     while (millis() - last_console_time < 50 || millis() - last_amplifier_time < 50) {

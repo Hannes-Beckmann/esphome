@@ -48,7 +48,7 @@ int Z906::update(bool quiet) {
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
-    if (!quiet){this->console_uart_->write_byte(data);}
+    if (!quiet){this->console_uart_->write_byte(&data);}
     status[i] = data;
     ESP_LOGD(TAG, "Mid Amp: %x", data);
   }
