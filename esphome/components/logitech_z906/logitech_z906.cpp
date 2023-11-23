@@ -57,7 +57,11 @@ void LogitechZ906Component::synchronize_volume_command(float* console_volume, fl
     this->set_mute(false);
   }
   if (direction > 0) {
+    ESP_LOGD(TAG, "Volume Up");
+    ESP_LOGD(TAG, "Console Volume: %f", *console_volume);
     *console_volume += *console_volume < 43 ? 1 : 0;
+    ESP_LOGD(TAG, "New Console Volume: %f", *console_volume);
+    ESP_LOGD(TAG, "Amplifier Volume: %f", *amplifier_volume);
     if (*console_volume > *amplifier_volume) {
       *amplifier_volume += 1;
       this->amplifier_uart_->write_byte(cmd);
