@@ -52,7 +52,10 @@ void LogitechZ906Component::publish_internal_state() {
 }
 
 void LogitechZ906Component::synchronize_volume_command(float* console_volume, float* amplifier_volume, uint8_t cmd, int8_t direction){
-  
+  //when volume is changed by console unmute amplifier
+  if(this->state_.mute){
+    this->set_mute(false);
+  }
   if (direction > 0) {
     *console_volume += *console_volume < 43 ? 1 : 0;
     if (*console_volume > *amplifier_volume) {
@@ -314,9 +317,11 @@ void LogitechZ906Component::set_switch_state(SwitchType type, bool state) {
   switch (type) {
     case POWER:
       this->set_power(state);
+      this->power_->publish_state(this->state_.power);
       break;
     case MUTE:
       this->set_mute(state);
+      this->mute_->publish_state(this->state_.mute);
       break;
   }
 }
@@ -343,8 +348,8 @@ void LogitechZ906Component::set_source(const std::string &source) {
     case COAXIAL:
       this->z906_.cmd(SELECT_INPUT_5);
       break;
-  this->input_->publish_state(source);
   this->state_.input = input;
+  this->input_->publish_state(source);
   }
 }
 
@@ -389,13 +394,26 @@ void LogitechZ906Component::set_volume(float* current_volume, float value, uint8
 
 void LogitechZ906Component::set_power(bool power) {
   ESP_LOGD(TAG, "Setting power to %s", power ? "ON" : "OFF");
-  this->state_.power = this->z906_.cmd(power ? PWM_ON : PWM_OFF) ? power : this->state_.power;
-  this->power_->publish_state(this->state_.power);
+  if (!power && this->state_.power || power && !this->state_.power) {
+    uint8_t cmd = power ? PWM_ON : PWM_OFF;
+    if (this->state_.master_volume > 0) {
+      this->set_mute(true);
+    }
+    this->z906_.cmd(cmd);
+    this->set_mute(false);
+    this->state_.power = false;
+  }
 }
 void LogitechZ906Component::set_mute(bool mute) {
   ESP_LOGD(TAG, "Setting mute to %s", mute ? "ON" : "OFF");
-  this->state_.mute = this->z906_.cmd(mute ? MUTE_ON : MUTE_OFF) ? mute : this->state_.mute;
-  this->mute_->publish_state(this->state_.mute);
+  if(mute){
+    this->master_volume_before_mute_ = this->state_.master_volume;
+    this->set_volume(&(this->state_.master_volume), 0, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
+  }
+  else{
+    this->set_volume(&(this->state_.master_volume), this->master_volume_before_mute_, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
+  }
+  this->state_.mute = mute;
 }
 
 }  // namespace logitech_z906

@@ -56,6 +56,7 @@ class LogitechZ906Component : public Component{
  protected:
   State state_;
   State console_state_;
+  float master_volume_before_mute_;
 
   bool do_synchronization_when_communication_clear = false;
   bool force_update = false;
