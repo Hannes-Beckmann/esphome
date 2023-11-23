@@ -50,7 +50,7 @@ int Z906::update(bool quiet) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     ESP_LOGD(TAG, "Amp ->: %x", data);
-    if (!quiet){this->console_uart_->write_byte(data); ESP_LOGD(TAG, "Con ->: %x", data);}
+    if (!quiet){this->console_uart_->write_byte(data); ESP_LOGD(TAG, "-> Con: %x", data);}
     status[i] = data;
     
   }

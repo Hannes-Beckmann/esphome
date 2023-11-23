@@ -52,6 +52,8 @@ void LogitechZ906Component::publish_internal_state() {
 }
 
 void LogitechZ906Component::synchronize_volume_command(float* console_volume, float* amplifier_volume, uint8_t cmd, int8_t direction){
+  this->amplifier_uart_->write_byte(cmd);
+  return;
   //when volume is changed by console unmute amplifier
   if(this->state_.mute){
     this->set_mute(false);
