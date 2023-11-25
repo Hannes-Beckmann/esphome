@@ -59,7 +59,10 @@ class LogitechZ906Component : public Component{
   float master_volume_before_mute_;
 
   bool do_synchronization_when_communication_clear = false;
+  bool publish_state_when_communication_clear = false;
   bool force_update = false;
+
+  unsigned long time_since_last_reset_request = 0;
 
   uart::UARTComponent *console_uart_{nullptr};
   uart::UARTComponent *amplifier_uart_{nullptr};

@@ -53,7 +53,6 @@ void LogitechZ906Component::publish_internal_state() {
 
 void LogitechZ906Component::synchronize_volume_command(float* console_volume, float* amplifier_volume, uint8_t cmd, int8_t direction){
   this->amplifier_uart_->write_byte(cmd);
-  return;
   //when volume is changed by console unmute amplifier
   if(this->state_.mute){
     this->set_mute(false);
@@ -103,107 +102,93 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
   switch (cmd){
     case SELECT_INPUT_AUX:
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::AUX, cmd);
-      this->source_->publish_state(input_to_string(Input::AUX));
       break;
     case SELECT_INPUT_1:
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::LINE, cmd);
-      this->source_->publish_state(input_to_string(Input::LINE));
       break;
     case SELECT_INPUT_2:
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::CHINCH, cmd);
-      this->source_->publish_state(input_to_string(Input::CHINCH));
       break;
     case SELECT_INPUT_3:
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::OPTICAL1, cmd);
-      this->source_->publish_state(input_to_string(Input::OPTICAL1));
       break;
     case SELECT_INPUT_4:
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::OPTICAL2, cmd);
-      this->source_->publish_state(input_to_string(Input::OPTICAL2));
       break;
     case SELECT_INPUT_5:
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::COAXIAL, cmd);
-      this->source_->publish_state(input_to_string(Input::COAXIAL));
       break;
     case SELECT_EFFECT_NO:
       synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::NONE, cmd);
-      this->effect_->publish_state(effect_to_string(Effect::NONE));
       break;
     case SELECT_EFFECT_3D:
       synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::EFFECT_3D, cmd);
-      this->effect_->publish_state(effect_to_string(Effect::EFFECT_3D));
       break;
     case SELECT_EFFECT_21:
       synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::EFFECT_21, cmd);
-      this->effect_->publish_state(effect_to_string(Effect::EFFECT_21));
       break;
     case SELECT_EFFECT_41:
       synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::EFFECT_41, cmd);
-      this->effect_->publish_state(effect_to_string(Effect::EFFECT_41));
       break;
     case LEVEL_MAIN_UP:
       synchronize_volume_command(&(this->console_state_.master_volume), &(this->state_.master_volume), cmd, 1);
-      this->master_volume_->publish_state(this->state_.master_volume);
       break;
     case LEVEL_MAIN_DOWN:
       synchronize_volume_command(&(this->console_state_.master_volume), &(this->state_.master_volume), cmd, -1);
-      this->master_volume_->publish_state(this->state_.master_volume);
       break;
     case LEVEL_SUB_UP:
       synchronize_volume_command(&(this->console_state_.bass_volume), &(this->state_.bass_volume), cmd, 1);
-      this->bass_volume_->publish_state(this->state_.bass_volume);
       break;
     case LEVEL_SUB_DOWN:
       synchronize_volume_command(&(this->console_state_.bass_volume), &(this->state_.bass_volume), cmd, -1);
-      this->bass_volume_->publish_state(this->state_.bass_volume);
       break;
     case LEVEL_CENTER_UP:
       synchronize_volume_command(&(this->console_state_.center_volume), &(this->state_.center_volume), cmd, 1);
-      this->center_volume_->publish_state(this->state_.center_volume);
       break;
     case LEVEL_CENTER_DOWN:
       synchronize_volume_command(&(this->console_state_.center_volume), &(this->state_.center_volume), cmd, -1);
-      this->center_volume_->publish_state(this->state_.center_volume);
       break;
     case LEVEL_REAR_UP:
       synchronize_volume_command(&(this->console_state_.rear_volume), &(this->state_.rear_volume), cmd, 1);
-      this->rear_volume_->publish_state(this->state_.rear_volume);
       break;
     case LEVEL_REAR_DOWN:
       synchronize_volume_command(&(this->console_state_.rear_volume), &(this->state_.rear_volume), cmd, -1);
-      this->rear_volume_->publish_state(this->state_.rear_volume);
       break;
     case MUTE_ON:
       this->amplifier_uart_->write_byte(cmd);
       this->state_.mute = true;
       this->console_state_.mute = true;
-      this->mute_->publish_state(true);
       break;
     case MUTE_OFF:
       this->amplifier_uart_->write_byte(cmd);
       this->state_.mute = false;
       this->console_state_.mute = false;
-      this->mute_->publish_state(false);
       break;
     case PWM_ON:
       this->amplifier_uart_->write_byte(cmd);
       this->state_.power = true;
       this->console_state_.power = true;
-      this->power_->publish_state(true);
       break;
     case PWM_OFF:
       this->amplifier_uart_->write_byte(cmd);
       this->state_.power = false;
       this->console_state_.power = false;
-      this->power_->publish_state(false);
       break;
     case GET_STATUS:
       this->z906_.update(false);
       this->do_synchronization_when_communication_clear = true;
+      break;
+    case GET_PWR_UP_TIME:
+      this->time_since_last_reset_request = millis();
+      this->amplifier_uart_->write_byte(cmd);
+      break;
     default:
       this->amplifier_uart_->write_byte(cmd);
   }
   
+  if (cmd == SELECT_INPUT_AUX || cmd == SELECT_INPUT_1 || cmd == SELECT_INPUT_2 || cmd == SELECT_INPUT_3 || cmd == SELECT_INPUT_4 || cmd == SELECT_INPUT_5 || cmd == SELECT_EFFECT_21 || cmd == SELECT_EFFECT_3D || cmd == SELECT_EFFECT_41 || cmd == SELECT_EFFECT_NO || cmd == LEVEL_MAIN_UP || cmd == LEVEL_MAIN_DOWN || cmd == LEVEL_SUB_UP || cmd == LEVEL_SUB_DOWN || cmd == LEVEL_CENTER_UP || cmd == LEVEL_CENTER_DOWN || cmd == LEVEL_REAR_UP || cmd == LEVEL_REAR_DOWN || cmd == MUTE_ON || cmd == MUTE_OFF || cmd == PWM_ON || cmd == PWM_OFF){
+    this->publish_state_when_communication_clear = true;
+  }
 }
 
 void LogitechZ906Component::feed_console() {
@@ -236,12 +221,16 @@ void LogitechZ906Component::feed_console() {
       this->do_synchronization_when_communication_clear = false;
       this->update_internal_state(&(this->state_));
       this->update_internal_state(&(this->console_state_));
-      this->publish_internal_state();
+      this->publish_state_when_communication_clear = true;
     }
-    if (this->force_update) {
+    else if (this->force_update && millis() - this->time_since_last_reset_request < 55000) {
       this->force_update = false;
       this->z906_.update(true);
       this->update_internal_state(&(this->state_));
+      this->publish_state_when_communication_clear = true;
+    }
+    else if (this->publish_state_when_communication_clear && millis() - this->time_since_last_reset_request < 55000) {
+      this->publish_state_when_communication_clear = false;
       this->publish_internal_state();
     }
   }
