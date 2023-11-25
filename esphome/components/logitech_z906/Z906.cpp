@@ -29,11 +29,9 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
   return LRC;
 }
 
-
-
 int Z906::update(bool quiet) {
-  ESP_LOGD(TAG, "Fetch update"); 
-  while (this->amplifier_uart_->available()){
+  ESP_LOGD(TAG, "Fetch update");
+  while (this->amplifier_uart_->available()) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     ESP_LOGD(TAG, "Discard Amp: %x", data);
@@ -46,13 +44,15 @@ int Z906::update(bool quiet) {
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
-  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
+  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     ESP_LOGD(TAG, "Amp ->: %x", data);
-    if (!quiet){this->console_uart_->write_byte(data); ESP_LOGD(TAG, "-> Con: %x", data);}
+    if (!quiet) {
+      this->console_uart_->write_byte(data);
+      ESP_LOGD(TAG, "-> Con: %x", data);
+    }
     status[i] = data;
-    
   }
   if (status[STATUS_STX] != EXP_STX)
     return 0;
@@ -76,16 +76,14 @@ int Z906::request(uint8_t cmd) {
   return 0;
 }
 
-
-
 int Z906::cmd(uint8_t cmd) {
   ESP_LOGD(TAG, "Single cmd");
   this->amplifier_uart_->write_byte(cmd);
   ESP_LOGD(TAG, "-> Amp: %x", cmd);
   unsigned long currentMillis = millis();
 
-  while (this->amplifier_uart_->available() == 0){
-    if (millis() - currentMillis > SERIAL_TIME_OUT){
+  while (this->amplifier_uart_->available() == 0) {
+    if (millis() - currentMillis > SERIAL_TIME_OUT) {
       return 0;
     }
   }
@@ -103,9 +101,9 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
 
   status[STATUS_CHECKSUM] = LRC(status, STATUS_TOTAL_LENGTH);
 
-  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++){
+  for (int i = 0; i < STATUS_TOTAL_LENGTH; i++) {
     this->amplifier_uart_->write_byte(status[i]);
-   ESP_LOGD(TAG, "-> Amp: %x", status[i]);
+    ESP_LOGD(TAG, "-> Amp: %x", status[i]);
   }
   unsigned long currentMillis = millis();
 
@@ -113,7 +111,7 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       return 0;
 
-  for (int i = 0; i < ACK_TOTAL_LENGTH; i++){
+  for (int i = 0; i < ACK_TOTAL_LENGTH; i++) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     ESP_LOGD(TAG, "Amp ->: %x", data);
@@ -140,7 +138,7 @@ uint8_t Z906::main_sensor() {
 
   uint8_t temp[TEMP_TOTAL_LENGTH];
 
-  for (int i = 0; i < TEMP_TOTAL_LENGTH; i++){
+  for (int i = 0; i < TEMP_TOTAL_LENGTH; i++) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     temp[i] = data;

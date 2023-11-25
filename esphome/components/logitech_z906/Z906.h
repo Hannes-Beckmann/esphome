@@ -125,13 +125,12 @@ class Z906 {
   uint8_t main_sensor();
   uint8_t status[STATUS_TOTAL_LENGTH];
   int update(bool quiet = false);
+
  protected:
   uart::UARTComponent *amplifier_uart_;
   uart::UARTComponent *console_uart_;
 
-  
   uint8_t LRC(uint8_t *, uint8_t);
-  
 };
 
 }  // namespace logitech_z906

@@ -8,11 +8,9 @@ static const char *const TAG = "logitech_z906";
 
 float LogitechZ906Component::get_setup_priority() const { return setup_priority::DATA; }
 
-void LogitechZ906Component::setup() {
-  ESP_LOGCONFIG(TAG, "Setting up LogitechZ906...");
-}
+void LogitechZ906Component::setup() { ESP_LOGCONFIG(TAG, "Setting up LogitechZ906..."); }
 
-void LogitechZ906Component::loop() {this->feed_console();}
+void LogitechZ906Component::loop() { this->feed_console(); }
 
 void LogitechZ906Component::dump_config() { ESP_LOGCONFIG(TAG, "LogitechZ906:"); }
 
@@ -25,14 +23,14 @@ void LogitechZ906Component::set_console_uart_parent(uart::UARTComponent *console
   this->z906_.set_console_uart(console_uart);
 }
 
-void LogitechZ906Component::update_internal_state(State* state) {
-  state->input = (Input)this->z906_.status[STATUS_CURRENT_INPUT];
-  state->effect[0] = (Effect)this->z906_.status[STATUS_FX_INPUT_1];
-  state->effect[1] = (Effect)this->z906_.status[STATUS_FX_INPUT_2];
-  state->effect[2] = (Effect)this->z906_.status[STATUS_FX_INPUT_3];
-  state->effect[3] = (Effect)this->z906_.status[STATUS_FX_INPUT_4];
-  state->effect[4] = (Effect)this->z906_.status[STATUS_FX_INPUT_5];
-  state->effect[5] = (Effect)this->z906_.status[STATUS_FX_INPUT_AUX];
+void LogitechZ906Component::update_internal_state(State *state) {
+  state->input = (Input) this->z906_.status[STATUS_CURRENT_INPUT];
+  state->effect[0] = (Effect) this->z906_.status[STATUS_FX_INPUT_1];
+  state->effect[1] = (Effect) this->z906_.status[STATUS_FX_INPUT_2];
+  state->effect[2] = (Effect) this->z906_.status[STATUS_FX_INPUT_3];
+  state->effect[3] = (Effect) this->z906_.status[STATUS_FX_INPUT_4];
+  state->effect[4] = (Effect) this->z906_.status[STATUS_FX_INPUT_5];
+  state->effect[5] = (Effect) this->z906_.status[STATUS_FX_INPUT_AUX];
   state->master_volume = this->z906_.status[STATUS_MAIN_LEVEL];
   state->bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
   state->center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
@@ -51,10 +49,11 @@ void LogitechZ906Component::publish_internal_state() {
   this->mute_->publish_state(this->state_.mute);
 }
 
-void LogitechZ906Component::synchronize_volume_command(float* console_volume, float* amplifier_volume, uint8_t cmd, int8_t direction){
+void LogitechZ906Component::synchronize_volume_command(float *console_volume, float *amplifier_volume, uint8_t cmd,
+                                                       int8_t direction) {
   this->amplifier_uart_->write_byte(cmd);
-  //when volume is changed by console unmute amplifier
-  if(this->state_.mute){
+  // when volume is changed by console unmute amplifier
+  if (this->state_.mute) {
     this->set_mute(false);
   }
   if (direction > 0) {
@@ -66,40 +65,38 @@ void LogitechZ906Component::synchronize_volume_command(float* console_volume, fl
     if (*console_volume > *amplifier_volume) {
       *amplifier_volume += 1;
       this->amplifier_uart_->write_byte(cmd);
-    }
-    else {
+    } else {
       // fake receive from amplifier
       this->console_uart_->write_byte(cmd);
     }
-  }
-  else if (direction < 0) {
+  } else if (direction < 0) {
     *console_volume -= *console_volume > 0 ? 1 : 0;
     if (*console_volume < *amplifier_volume) {
       *amplifier_volume -= 1;
       this->amplifier_uart_->write_byte(cmd);
-    }
-    else {
+    } else {
       // fake receive from amplifier
       this->console_uart_->write_byte(cmd);
     }
   }
 }
 
-void LogitechZ906Component::synchronize_input_command(Input* console_input, Input* amplifier_input, const Input& input_to_set, uint8_t cmd){
+void LogitechZ906Component::synchronize_input_command(Input *console_input, Input *amplifier_input,
+                                                      const Input &input_to_set, uint8_t cmd) {
   *console_input = input_to_set;
   *amplifier_input = input_to_set;
   this->amplifier_uart_->write_byte(cmd);
 }
 
-void LogitechZ906Component::synchronize_effect_command(Effect* console_effect, Effect* amplifier_effect, const Effect& effect_to_set, uint8_t cmd){
+void LogitechZ906Component::synchronize_effect_command(Effect *console_effect, Effect *amplifier_effect,
+                                                       const Effect &effect_to_set, uint8_t cmd) {
   *console_effect = effect_to_set;
   *amplifier_effect = effect_to_set;
   this->amplifier_uart_->write_byte(cmd);
-
 }
 
 void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
-  switch (cmd){
+  switch (cmd) {
     case SELECT_INPUT_AUX:
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::AUX, cmd);
       break;
@@ -119,16 +116,20 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       synchronize_input_command(&(this->console_state_.input), &(this->state_.input), Input::COAXIAL, cmd);
       break;
     case SELECT_EFFECT_NO:
-      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::NONE, cmd);
+      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]),
+                                 &(this->state_.effect[this->state_.input]), Effect::NONE, cmd);
       break;
     case SELECT_EFFECT_3D:
-      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::EFFECT_3D, cmd);
+      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]),
+                                 &(this->state_.effect[this->state_.input]), Effect::EFFECT_3D, cmd);
       break;
     case SELECT_EFFECT_21:
-      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::EFFECT_21, cmd);
+      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]),
+                                 &(this->state_.effect[this->state_.input]), Effect::EFFECT_21, cmd);
       break;
     case SELECT_EFFECT_41:
-      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]), &(this->state_.effect[this->state_.input]), Effect::EFFECT_41, cmd);
+      synchronize_effect_command(&(this->console_state_.effect[this->console_state_.input]),
+                                 &(this->state_.effect[this->state_.input]), Effect::EFFECT_41, cmd);
       break;
     case LEVEL_MAIN_UP:
       synchronize_volume_command(&(this->console_state_.master_volume), &(this->state_.master_volume), cmd, 1);
@@ -185,8 +186,13 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
     default:
       this->amplifier_uart_->write_byte(cmd);
   }
-  
-  if (cmd == SELECT_INPUT_AUX || cmd == SELECT_INPUT_1 || cmd == SELECT_INPUT_2 || cmd == SELECT_INPUT_3 || cmd == SELECT_INPUT_4 || cmd == SELECT_INPUT_5 || cmd == SELECT_EFFECT_21 || cmd == SELECT_EFFECT_3D || cmd == SELECT_EFFECT_41 || cmd == SELECT_EFFECT_NO || cmd == LEVEL_MAIN_UP || cmd == LEVEL_MAIN_DOWN || cmd == LEVEL_SUB_UP || cmd == LEVEL_SUB_DOWN || cmd == LEVEL_CENTER_UP || cmd == LEVEL_CENTER_DOWN || cmd == LEVEL_REAR_UP || cmd == LEVEL_REAR_DOWN || cmd == MUTE_ON || cmd == MUTE_OFF || cmd == PWM_ON || cmd == PWM_OFF){
+
+  if (cmd == SELECT_INPUT_AUX || cmd == SELECT_INPUT_1 || cmd == SELECT_INPUT_2 || cmd == SELECT_INPUT_3 ||
+      cmd == SELECT_INPUT_4 || cmd == SELECT_INPUT_5 || cmd == SELECT_EFFECT_21 || cmd == SELECT_EFFECT_3D ||
+      cmd == SELECT_EFFECT_41 || cmd == SELECT_EFFECT_NO || cmd == LEVEL_MAIN_UP || cmd == LEVEL_MAIN_DOWN ||
+      cmd == LEVEL_SUB_UP || cmd == LEVEL_SUB_DOWN || cmd == LEVEL_CENTER_UP || cmd == LEVEL_CENTER_DOWN ||
+      cmd == LEVEL_REAR_UP || cmd == LEVEL_REAR_DOWN || cmd == MUTE_ON || cmd == MUTE_OFF || cmd == PWM_ON ||
+      cmd == PWM_OFF) {
     this->publish_state_when_communication_clear = true;
   }
 }
@@ -197,10 +203,10 @@ void LogitechZ906Component::feed_console() {
     unsigned long last_amplifier_time = millis();
     uint8_t status[STATUS_TOTAL_LENGTH];
     uint8_t data = 0;
-    while (this->amplifier_uart_->available()){
+    while (this->amplifier_uart_->available()) {
       this->amplifier_uart_->read_byte(&data);
     }
-    
+
     while (millis() - last_console_time < 100 || millis() - last_amplifier_time < 100) {
       if (this->console_uart_->available()) {
         this->console_uart_->read_byte(&data);
@@ -215,21 +221,18 @@ void LogitechZ906Component::feed_console() {
         last_amplifier_time = millis();
       }
     }
-  }
-  else{
+  } else {
     if (this->do_synchronization_when_communication_clear) {
       this->do_synchronization_when_communication_clear = false;
       this->update_internal_state(&(this->state_));
       this->update_internal_state(&(this->console_state_));
       this->publish_state_when_communication_clear = true;
-    }
-    else if (this->force_update && millis() - this->time_since_last_reset_request < 55000) {
+    } else if (this->force_update && millis() - this->time_since_last_reset_request < 55000) {
       this->force_update = false;
       this->z906_.update(true);
       this->update_internal_state(&(this->state_));
       this->publish_state_when_communication_clear = true;
-    }
-    else if (this->publish_state_when_communication_clear && millis() - this->time_since_last_reset_request < 55000) {
+    } else if (this->publish_state_when_communication_clear && millis() - this->time_since_last_reset_request < 55000) {
       this->publish_state_when_communication_clear = false;
       this->publish_internal_state();
     }
@@ -297,8 +300,6 @@ void LogitechZ906Component::set_number_value(NumberType type, float value) {
   this->force_update = true;
 }
 
-
-
 void LogitechZ906Component::set_switch(SwitchType type, switch_::Switch *switch_component) {
   switch (type) {
     case POWER:
@@ -346,8 +347,8 @@ void LogitechZ906Component::set_source(const std::string &source) {
     case COAXIAL:
       this->z906_.cmd(SELECT_INPUT_5);
       break;
-  this->state_.input = input;
-  this->source_->publish_state(source);
+      this->state_.input = input;
+      this->source_->publish_state(source);
   }
 }
 
@@ -367,13 +368,13 @@ void LogitechZ906Component::set_effect(const std::string &effect) {
     case EFFECT_41:
       this->z906_.cmd(SELECT_EFFECT_41);
       break;
-    
-    this->state_.effect[this->state_.input] = effect_e;
-    this->effect_->publish_state(effect);
+
+      this->state_.effect[this->state_.input] = effect_e;
+      this->effect_->publish_state(effect);
   }
 }
 
-void LogitechZ906Component::set_volume(float* current_volume, float value, uint8_t cmd_up, uint8_t cmd_down) {
+void LogitechZ906Component::set_volume(float *current_volume, float value, uint8_t cmd_up, uint8_t cmd_down) {
   ESP_LOGD(TAG, "Setting volume to %f", value);
   int8_t amount = ((uint8_t) value) - *current_volume;
   ESP_LOGD(TAG, "Amount: %d", amount);
@@ -409,11 +410,10 @@ void LogitechZ906Component::set_power(bool power) {
 }
 void LogitechZ906Component::set_mute(bool mute) {
   ESP_LOGD(TAG, "Setting mute to %s", mute ? "ON" : "OFF");
-  if(mute){
+  if (mute) {
     this->master_volume_before_mute_ = this->state_.master_volume;
     this->set_volume(&(this->state_.master_volume), 0, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
-  }
-  else{
+  } else {
     this->set_volume(&(this->state_.master_volume), this->master_volume_before_mute_, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
   }
   this->state_.mute = mute;

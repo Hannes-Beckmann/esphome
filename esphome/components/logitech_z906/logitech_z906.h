@@ -13,7 +13,7 @@
 namespace esphome {
 namespace logitech_z906 {
 
-class LogitechZ906Component : public Component{
+class LogitechZ906Component : public Component {
  public:
   float get_setup_priority() const override;
 
@@ -25,7 +25,7 @@ class LogitechZ906Component : public Component{
 
   void set_amplifier_uart_parent(uart::UARTComponent *amplifier_uart);
   void set_console_uart_parent(uart::UARTComponent *console_uart);
-  
+
   void set_select_value(SelectType type, const std::string &value);
   void set_select(SelectType type, select::Select *select);
 
@@ -38,20 +38,19 @@ class LogitechZ906Component : public Component{
   void set_source(const std::string &source);
   void set_effect(const std::string &effect);
 
-
-  void set_volume(float* current_volume, float value, uint8_t cmd_up, uint8_t cmd_down);
+  void set_volume(float *current_volume, float value, uint8_t cmd_up, uint8_t cmd_down);
 
   void set_power(bool power);
   void set_mute(bool mute);
 
-  void update_internal_state(State* state);
+  void update_internal_state(State *state);
   void publish_internal_state();
 
   void synchronize_console_command(uint8_t cmd);
-  void synchronize_volume_command(float* console_volume, float* amplifier_volume, uint8_t cmd, int8_t direction);
-  void synchronize_input_command(Input* console_input, Input* amplifier_input, const Input& input_to_set, uint8_t cmd);
-  void synchronize_effect_command(Effect* console_effect, Effect* amplifier_effect, const Effect& effect_to_set, uint8_t cmd);
-
+  void synchronize_volume_command(float *console_volume, float *amplifier_volume, uint8_t cmd, int8_t direction);
+  void synchronize_input_command(Input *console_input, Input *amplifier_input, const Input &input_to_set, uint8_t cmd);
+  void synchronize_effect_command(Effect *console_effect, Effect *amplifier_effect, const Effect &effect_to_set,
+                                  uint8_t cmd);
 
  protected:
   State state_;
