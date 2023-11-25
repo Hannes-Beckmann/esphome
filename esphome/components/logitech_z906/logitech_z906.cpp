@@ -240,7 +240,7 @@ void LogitechZ906Component::feed_console() {
       this->update_internal_state(&(this->state_));
       this->update_internal_state(&(this->console_state_));
       this->publish_state_when_communication_clear = true;
-    } else if (this->force_update && last_reset_duration < 57000) {
+    } else if (this->force_update && (last_reset_duration < 57000 || last_reset_duration > 61000)) {
       this->force_update = false;
       this->z906_.update(true);
       this->update_internal_state(&(this->state_));
