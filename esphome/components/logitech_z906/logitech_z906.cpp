@@ -35,7 +35,7 @@ void LogitechZ906Component::update_internal_state(State *state) {
   state->bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
   state->center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
   state->rear_volume = this->z906_.status[STATUS_READ_LEVEL];
-  state->power = this->z906_.status[STATUS_STBY] == 0;
+  //state->power = this->z906_.status[STATUS_STBY] == 0;
 }
 
 void LogitechZ906Component::publish_internal_state() {
