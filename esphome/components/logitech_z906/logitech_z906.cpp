@@ -195,7 +195,7 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       cmd == SELECT_EFFECT_41 || cmd == SELECT_EFFECT_NO || cmd == LEVEL_MAIN_UP || cmd == LEVEL_MAIN_DOWN ||
       cmd == LEVEL_SUB_UP || cmd == LEVEL_SUB_DOWN || cmd == LEVEL_CENTER_UP || cmd == LEVEL_CENTER_DOWN ||
       cmd == LEVEL_REAR_UP || cmd == LEVEL_REAR_DOWN || cmd == MUTE_ON || cmd == MUTE_OFF || cmd == PWM_ON ||
-      cmd == PWM_OFF) {
+      cmd == PWM_OFF || cmd == EEPROM_SAVE) {
     this->publish_state_when_communication_clear = true;
   }
 }
