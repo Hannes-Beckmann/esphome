@@ -59,7 +59,7 @@ class LogitechZ906Component : public Component {
 
   bool do_synchronization_when_communication_clear = false;
   bool publish_state_when_communication_clear = false;
-  bool force_update = false;
+  bool force_update = true;
 
   unsigned long time_since_last_reset_request = 0;
 
