@@ -169,7 +169,7 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       this->state_.power = true;
       this->console_state_.power = true;
       break;
-    case PWM_OFF:
+    case EEPROM_SAVE:
       this->amplifier_uart_->write_byte(cmd);
       this->state_.power = false;
       this->console_state_.power = false;
