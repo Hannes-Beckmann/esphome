@@ -182,6 +182,10 @@ void LogitechZ906Component::synchronize_console_command(uint8_t cmd) {
       this->time_since_last_reset_request = millis();
       this->amplifier_uart_->write_byte(cmd);
       break;
+    case RESET_PWR_UP_TIME:
+      this->time_since_last_reset_request = millis();
+      this->amplifier_uart_->write_byte(cmd);
+      break;
     default:
       this->amplifier_uart_->write_byte(cmd);
   }
@@ -220,17 +224,19 @@ void LogitechZ906Component::feed_console() {
       }
     }
   } else {
+    unsigned long last_reset_duration = millis() - this->time_since_last_reset_request;
     if (this->do_synchronization_when_communication_clear) {
       this->do_synchronization_when_communication_clear = false;
       this->update_internal_state(&(this->state_));
       this->update_internal_state(&(this->console_state_));
       this->publish_state_when_communication_clear = true;
-    } else if (this->force_update && millis() - this->time_since_last_reset_request < 55000) {
+    } else if (this->force_update && last_reset_duration < 57000) {
       this->force_update = false;
       this->z906_.update(true);
       this->update_internal_state(&(this->state_));
       this->publish_state_when_communication_clear = true;
-    } else if (this->publish_state_when_communication_clear && millis() - this->time_since_last_reset_request < 55000) {
+    } else if (this->publish_state_when_communication_clear &&
+               (last_reset_duration < 57000 || last_reset_duration > 61000)) {
       this->publish_state_when_communication_clear = false;
       this->publish_internal_state();
     }
