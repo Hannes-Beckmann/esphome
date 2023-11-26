@@ -9,10 +9,7 @@ static const char *const TAG = "logitech_z906";
 float LogitechZ906Component::get_setup_priority() const { return setup_priority::DATA; }
 
 void LogitechZ906Component::setup() {
-  Udp.begin(localUdpPort);
-  Udp.beginPacket("192.168.179.4", 5007);
-  Udp.print("Wifi connected");
-  Udp.endPacket();
+  
 }
 
 void LogitechZ906Component::loop() { this->feed_console(); }
