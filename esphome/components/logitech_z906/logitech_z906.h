@@ -7,7 +7,7 @@
 #include "esphome/components/switch/switch.h"
 #include "logitech_z906_component_types.h"
 #include "logitech_z906_state.h"
-#include <WiFiUdp.h>
+//#include <WiFiUdp.h>
 
 #include "Z906.h"
 
@@ -58,8 +58,8 @@ class LogitechZ906Component : public Component {
   State console_state_;
   float master_volume_before_mute_;
 
-  WiFiUDP Udp;
-  unsigned int localUdpPort = 5008;
+  //WiFiUDP Udp;
+  //unsigned int localUdpPort = 5008;
 
   bool do_synchronization_when_communication_clear = false;
   bool publish_state_when_communication_clear = false;
