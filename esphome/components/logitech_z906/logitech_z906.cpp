@@ -431,9 +431,11 @@ void LogitechZ906Component::set_mute(bool mute) {
   ESP_LOGD(TAG, "Setting mute to %s", mute ? "ON" : "OFF");
   if (mute) {
     this->master_volume_before_mute_ = this->state_.master_volume;
-    this->set_volume(&(this->state_.master_volume), 0, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
+    //this->set_volume(&(this->state_.master_volume), 0, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
+    this->z906_.cmd(MUTE_ON);
   } else {
-    this->set_volume(&(this->state_.master_volume), this->master_volume_before_mute_, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
+    //this->set_volume(&(this->state_.master_volume), this->master_volume_before_mute_, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
+    this->z906_.cmd(MUTE_OFF);
   }
   this->state_.mute = mute;
 }
