@@ -1,6 +1,7 @@
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import uart
+from esphome.components.gpio import switch
 from esphome.const import CONF_ID, CONF_UART_ID
 DEPENDENCIES = ["uart"]
 AUTO_LOAD = ["select"]
@@ -9,7 +10,7 @@ MULTI_CONF = True
 CONF_LOGITECH_Z906_ID = "logitech_z906_id"
 
 CONF_AMPLIFIER_UART_ID = "amplifier_uart_id"
-CONF_CONSOLE_UART_ID = "console_uart_id"
+CONF_POWER_GPIOSWITCH_ID = "power_pin_id"
 
 logitech_z906_ns = cg.esphome_ns.namespace("logitech_z906")
 LogitechZ906Component = logitech_z906_ns.class_(
@@ -26,7 +27,7 @@ CONFIG_SCHEMA = cv.All(
     cv.Schema({
         cv.GenerateID(CONF_ID): cv.declare_id(LogitechZ906Component),
         cv.Required(CONF_AMPLIFIER_UART_ID): cv.use_id(uart.UARTComponent),
-        cv.Required(CONF_CONSOLE_UART_ID): cv.use_id(uart.UARTComponent),
+        cv.Optional(CONF_POWER_PIN_ID): cv.use_id(switch.GPIOSwitch),
         })
     .extend(cv.COMPONENT_SCHEMA)
 )

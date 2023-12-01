@@ -7,8 +7,6 @@
 #include "esphome/components/switch/switch.h"
 #include "logitech_z906_component_types.h"
 #include "logitech_z906_state.h"
-//#include <WiFiUdp.h>
-
 #include "Z906.h"
 
 namespace esphome {
@@ -47,27 +45,10 @@ class LogitechZ906Component : public Component {
   void update_internal_state(State *state);
   void publish_internal_state();
 
-  void synchronize_console_command(uint8_t cmd);
-  void synchronize_volume_command(float *console_volume, float *amplifier_volume, uint8_t cmd, int8_t direction);
-  void synchronize_input_command(Input *console_input, Input *amplifier_input, const Input &input_to_set, uint8_t cmd);
-  void synchronize_effect_command(Effect *console_effect, Effect *amplifier_effect, const Effect &effect_to_set,
-                                  uint8_t cmd);
-
  protected:
   State state_;
-  State console_state_;
   float master_volume_before_mute_;
 
-  //WiFiUDP Udp;
-  //unsigned int localUdpPort = 5008;
-
-  bool do_synchronization_when_communication_clear = false;
-  bool publish_state_when_communication_clear = false;
-  bool force_update = true;
-
-  unsigned long time_since_last_reset_request = 0;
-
-  uart::UARTComponent *console_uart_{nullptr};
   uart::UARTComponent *amplifier_uart_{nullptr};
 
   select::Select *source_;

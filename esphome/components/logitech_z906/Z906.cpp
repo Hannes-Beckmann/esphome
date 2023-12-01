@@ -13,11 +13,6 @@ void Z906::set_amplifier_uart(uart::UARTComponent *uart) {
   // dev_serial->begin(BAUD_RATE,SERIAL_CONFIG);
 }
 
-void Z906::set_console_uart(uart::UARTComponent *uart) {
-  this->console_uart_ = uart;
-  // dev_serial->begin(BAUD_RATE,SERIAL_CONFIG);
-}
-
 // Longitudinal Redundancy Check {-1,-1}
 
 uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
@@ -29,7 +24,7 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
   return LRC;
 }
 
-int Z906::update(bool quiet) {
+int Z906::update() {
   ESP_LOGD(TAG, "Fetch update");
   while (this->amplifier_uart_->available()) {
     uint8_t data = 0;
@@ -48,10 +43,6 @@ int Z906::update(bool quiet) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
     ESP_LOGD(TAG, "Amp ->: %x", data);
-    if (!quiet) {
-      this->console_uart_->write_byte(data);
-      ESP_LOGD(TAG, "-> Con: %x", data);
-    }
     status[i] = data;
   }
   if (status[STATUS_STX] != EXP_STX)

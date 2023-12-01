@@ -115,7 +115,6 @@ class Z906 {
   Z906();
 
   void set_amplifier_uart(uart::UARTComponent *uart);
-  void set_console_uart(uart::UARTComponent *uart);
 
   int cmd(uint8_t);
   int cmd(uint8_t, uint8_t);
@@ -128,7 +127,6 @@ class Z906 {
 
  protected:
   uart::UARTComponent *amplifier_uart_;
-  uart::UARTComponent *console_uart_;
 
   uint8_t LRC(uint8_t *, uint8_t);
 };
