@@ -37,6 +37,7 @@ int Z906::update() {
 
   while (this->amplifier_uart_->available() < STATUS_TOTAL_LENGTH)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
+      ESP_LOGD(TAG, "SERIAL TIMEOUT!");
       return 0;
 
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++) {
@@ -51,7 +52,7 @@ int Z906::update() {
     return 0;
   if (status[STATUS_CHECKSUM] == LRC(status, STATUS_TOTAL_LENGTH))
     return 1;
-
+  ESP_LOGD(TAG, "Checksum false!");
   return 0;
 }
 
@@ -121,6 +122,7 @@ int Z906::write_status(){
 
   while (this->amplifier_uart_->available() < ACK_TOTAL_LENGTH)
     if (millis() - currentMillis > SERIAL_TIME_OUT)
+      ESP_LOGD(TAG, "SERIAL TIMEOUT!");
       return 0;
 
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++) {
