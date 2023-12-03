@@ -241,7 +241,7 @@ void LogitechZ906Component::set_power(bool power){
       }
     }
     this->state_.power = true;
-    this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, this->state_.input, this->state_.effect);
+    this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
     if(!this->state_.standby){
       this->set_standby(false);
     }
@@ -259,7 +259,7 @@ void LogitechZ906Component::set_standby(bool standby) {
   uint8_t cmd = standby ? PWM_ON : PWM_OFF;
   if (this->state_.power){
     bool mute_state_before = this->state_.mute
-    this->set_mute(true)
+    this->set_mute(true);
     this->z906_.cmd(cmd);
     this->set_mute(mute_state_before);
   }
