@@ -149,6 +149,7 @@ void LogitechZ906Component::set_switch_state(SwitchType type, bool state) {
       break;
     case POWER:
       this->set_power(state);
+      ESP_LOGD(TAG, "publishing power state");
       this->power_->publish_state(this->state_.power);
       ESP_LOGD(TAG, "Power is state: %s", this->state_.power ? "true" : "false");
       break;
