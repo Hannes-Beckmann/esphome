@@ -30,7 +30,7 @@ async def to_code(config):
     for volume_type in VOLUMES:
         if volume_type in config:
             var = await number.new_number(
-                config[volume_type], min_value=0.0, max_value=100.0, step=1.0
+                config[volume_type], min_value=0.0, max_value=43.0, step=1.0
             )
             await cg.register_component(var, config[volume_type])
             cg.add(var.set_number_type(volume_type))

@@ -24,7 +24,7 @@ uint8_t Z906::LRC(uint8_t *pData, uint8_t length) {
   return LRC;
 }
 
-int Z906::update() {
+int Z906::update() {  
   ESP_LOGD(TAG, "Fetch update");
   while (this->amplifier_uart_->available()) {
     uint8_t data = 0;
@@ -84,6 +84,23 @@ int Z906::cmd(uint8_t cmd) {
   return data;
 }
 
+void Z906::set_state(uint8_t main_volume, uint8_t sub_volume, uint8_t rear_volume, uint8_t center_volume, uint8_t input, uint8_t* effects){
+  this->update();
+  this->status[STATUS_MAIN_LEVEL] = main_volume;
+  this->status[STATUS_CENTER_LEVEL] = center_volume;
+  this->status[STATUS_READ_LEVEL] = rear_volume;
+  this->status[STATUS_SUB_LEVEL] = sub_volume;
+  this->status[STATUS_CURRENT_INPUT] = input;
+  this->status[STATUS_FX_INPUT_1] = effects[0];
+  this->status[STATUS_FX_INPUT_2] = effects[1];
+  this->status[STATUS_FX_INPUT_3] = effects[2];
+  this->status[STATUS_FX_INPUT_4] = effects[3];
+  this->status[STATUS_FX_INPUT_5] = effects[4];
+  this->status[STATUS_FX_INPUT_AUX] = effects[5];
+  status[STATUS_CHECKSUM] = LRC(status, STATUS_TOTAL_LENGTH);
+  write_status();
+}
+
 int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
   ESP_LOGD(TAG, "Long cmd");
   update();
@@ -92,6 +109,10 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
 
   status[STATUS_CHECKSUM] = LRC(status, STATUS_TOTAL_LENGTH);
 
+  return write_status();
+}
+
+int Z906::write_status(){
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++) {
     this->amplifier_uart_->write_byte(status[i]);
     ESP_LOGD(TAG, "-> Amp: %x", status[i]);
@@ -108,6 +129,10 @@ int Z906::cmd(uint8_t cmd_a, uint8_t cmd_b) {
     ESP_LOGD(TAG, "Amp ->: %x", data);
   }
   return 1;
+}
+
+bool Z906::is_powered_on(){
+  return this->update();
 }
 
 void Z906::log_status() {

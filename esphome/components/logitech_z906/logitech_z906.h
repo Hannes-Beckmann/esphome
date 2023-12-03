@@ -5,6 +5,7 @@
 #include "esphome/components/select/select.h"
 #include "esphome/components/number/number.h"
 #include "esphome/components/switch/switch.h"
+#include "esphome/components/output/binary_output.h"
 #include "logitech_z906_component_types.h"
 #include "logitech_z906_state.h"
 #include "Z906.h"
@@ -23,7 +24,6 @@ class LogitechZ906Component : public Component {
   void feed_console();
 
   void set_amplifier_uart_parent(uart::UARTComponent *amplifier_uart);
-  void set_console_uart_parent(uart::UARTComponent *console_uart);
 
   void set_select_value(SelectType type, const std::string &value);
   void set_select(SelectType type, select::Select *select);
@@ -33,6 +33,8 @@ class LogitechZ906Component : public Component {
 
   void set_switch_state(SwitchType type, bool state);
   void set_switch(SwitchType type, switch_::Switch *switch_component);
+
+  void set_binary_output_parent(output::BinaryOutput *binary_ouput);
 
   void set_source(const std::string &source);
   void set_effect(const std::string &effect);
@@ -59,8 +61,11 @@ class LogitechZ906Component : public Component {
   number::Number *center_volume_;
   number::Number *rear_volume_;
 
-  switch_::Switch *power_;
+  switch_::Switch *standby_;
   switch_::Switch *mute_;
+  switch_::Switch *standby_;
+
+  output::BinaryOutput *power_output_;
 
   Z906 z906_;
 };

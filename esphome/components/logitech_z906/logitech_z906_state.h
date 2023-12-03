@@ -11,6 +11,7 @@ struct State {
   float center_volume;
   float rear_volume;
   bool power;
+  bool standby;
   bool mute;
   Effect effect[6];
   Input input;

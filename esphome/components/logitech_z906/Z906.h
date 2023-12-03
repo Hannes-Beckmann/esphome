@@ -9,7 +9,7 @@ namespace logitech_z906 {
 #define SERIAL_CONFIG SERIAL_8O1
 #define SERIAL_TIME_OUT 1000
 
-#define STATUS_TOTAL_LENGTH 0x17
+#define STATUS_TOTAL_LENGTH 0x18
 #define ACK_TOTAL_LENGTH 0x05
 #define TEMP_TOTAL_LENGTH 0x0A
 
@@ -92,7 +92,7 @@ namespace logitech_z906 {
 #define STATUS_VER_C 0x13
 #define STATUS_STBY 0x14
 #define STATUS_AUTO_STBY 0x15
-#define STATUS_CHECKSUM 0x16
+#define STATUS_CHECKSUM 0x17
 
 // MASK
 
@@ -120,10 +120,14 @@ class Z906 {
   int cmd(uint8_t, uint8_t);
   int request(uint8_t);
   void log_status();
+  bool is_powered_on();
 
   uint8_t main_sensor();
   uint8_t status[STATUS_TOTAL_LENGTH];
-  int update(bool quiet = false);
+  int update();
+  void Z906::set_state(uint8_t main_volume, uint8_t sub_volume, uint8_t rear_volume, uint8_t center_volume, uint8_t input, uint8_t* effects);
+  int Z906::write_status();
+
 
  protected:
   uart::UARTComponent *amplifier_uart_;

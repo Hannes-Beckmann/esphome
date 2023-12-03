@@ -1,12 +1,14 @@
 #pragma once
 
-enum SwitchType { POWER, MUTE };
+enum SwitchType { POWER, MUTE, STANDBY };
 
 inline SwitchType resolve_switch_type(const std::string &type) {
   if (type == "power") {
     return POWER;
   } else if (type == "mute") {
     return MUTE;
+  } else if (type == "standby"){
+    return STANDBY;
   }
   return POWER;
 }
