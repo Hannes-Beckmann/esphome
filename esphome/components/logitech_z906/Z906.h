@@ -10,12 +10,12 @@ namespace logitech_z906 {
 #define SERIAL_TIME_OUT 1000
 
 #define STATUS_TOTAL_LENGTH 0x18
-#define ACK_TOTAL_LENGTH 0x06
+#define ACK_TOTAL_LENGTH 0x05
 #define TEMP_TOTAL_LENGTH 0x0A
 
 // Single Commands
 
-#define SELECT_INPUT_1 0x02
+#define SELECT_INPUT_1 0x02s
 #define SELECT_INPUT_2 0x05
 #define SELECT_INPUT_3 0x03
 #define SELECT_INPUT_4 0x04
@@ -125,9 +125,9 @@ class Z906 {
   uint8_t main_sensor();
   uint8_t status[STATUS_TOTAL_LENGTH];
   int update();
-  void set_state(uint8_t main_volume, uint8_t sub_volume, uint8_t rear_volume, uint8_t center_volume, uint8_t input, uint8_t* effects);
+  void set_state(uint8_t main_volume, uint8_t sub_volume, uint8_t rear_volume, uint8_t center_volume, uint8_t input,
+                 uint8_t *effects);
   int write_status();
-
 
  protected:
   uart::UARTComponent *amplifier_uart_;
