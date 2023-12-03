@@ -145,7 +145,7 @@ void LogitechZ906Component::set_switch_state(SwitchType type, bool state) {
     case STANDBY:
       this->set_standby(state);
       this->standby_->publish_state(this->state_.standby);
-      ESP_LOGD(TAG, "Standby is state: %s", this->state_.postandbywer ? "true" : "false");
+      ESP_LOGD(TAG, "Standby is state: %s", this->state_.standby ? "true" : "false");
       break;
     case POWER:
       this->set_power(state);
