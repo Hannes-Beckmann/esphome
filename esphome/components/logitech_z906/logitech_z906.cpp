@@ -97,10 +97,16 @@ void LogitechZ906Component::set_volume_number(NumberType type, number::Number *n
 void LogitechZ906Component::set_number_value(NumberType type, float value) {
   switch (type) {
     case MASTER:
-      //umute if master volume is adjusted
-      this->set_mute(false);
-      this->set_volume(this->state_.master_volume, value, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
-      this->state_.master_volume = (uint8_t) value;
+      //umute to new vlaue if master volume is adjusted
+      if (this->state_.mute) {
+        this->state_.master_volume = (uint8_t) value;
+        this->set_mute(false);
+        this->mute_->publish_state(this->state_.mute);
+      }
+      else{
+        this->set_volume(this->state_.master_volume, value, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
+        this->state_.master_volume = (uint8_t) value;
+      }
       this->master_volume_->publish_state(this->state_.master_volume);
       break;
     case BASS:
@@ -268,7 +274,7 @@ void LogitechZ906Component::set_power(bool power){
 
 void LogitechZ906Component::set_standby(bool standby) {
   ESP_LOGD(TAG, "Setting standby to %s", standby ? "ON" : "OFF");
-  uint8_t cmd = standby ? PWM_ON : PWM_OFF;
+  uint8_t cmd = standby ? PWM_OFF : PWM_ON;
   if (this->state_.power){
     bool mute_state_before = this->state_.mute;
     this->set_mute(true);
