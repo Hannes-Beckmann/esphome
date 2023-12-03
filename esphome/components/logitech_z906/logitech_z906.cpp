@@ -260,6 +260,7 @@ void LogitechZ906Component::set_power(bool power){
     bool mute_state_before = this->state_.mute;
     bool standby_state_before = this->state_.standby;
     this->power_amp_on();
+    this->z906_.cmd(MUTE_OFF);
     this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
     this->set_standby(standby_state_before);
     this->set_mute(mute_state_before);
@@ -267,7 +268,7 @@ void LogitechZ906Component::set_power(bool power){
   }
   else{
     this->set_mute(true);
-    //TODO: Maybe an eeprom save is neccessary here. Since we restore state in when powering on this might not be neccessary. This would be useful to restore state if the sp was turned off.  
+    this-z906_.cmd(EEPROM_SAVE);
     this->power_output_->turn_off();
     this->state_.power = false;
   }
