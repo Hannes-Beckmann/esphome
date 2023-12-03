@@ -132,7 +132,7 @@ void LogitechZ906Component::set_switch(SwitchType type, switch_::Switch *switch_
       this->standby_ = switch_component;
       break;
     case POWER:
-      this->standby_ = switch_component;
+      this->power_ = switch_component;
       break;
     case MUTE:
       this->mute_ = switch_component;
@@ -149,7 +149,7 @@ void LogitechZ906Component::set_switch_state(SwitchType type, bool state) {
       break;
     case POWER:
       this->set_power(state);
-      ESP_LOGD(TAG, "publishing power state");
+      ESP_LOGD(TAG, "publishing power state %s", this->state_.power ? "true" : "false");
       this->power_->publish_state(this->state_.power);
       ESP_LOGD(TAG, "Power is state: %s", this->state_.power ? "true" : "false");
       break;
