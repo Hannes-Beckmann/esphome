@@ -230,7 +230,7 @@ void LogitechZ906Component::set_volume(float current_volume, float value, uint8_
 }
 
 void LogitechZ906Component::power_amp_on(){
-  if (!this->power_output_->state){
+  if (!this->state_.power){
     this->power_output_->turn_on();
     //TODO: make this async
     unsigned long timeout_millis = millis();
