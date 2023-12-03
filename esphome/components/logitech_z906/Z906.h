@@ -10,7 +10,7 @@ namespace logitech_z906 {
 #define SERIAL_TIME_OUT 1000
 
 #define STATUS_TOTAL_LENGTH 0x18
-#define ACK_TOTAL_LENGTH 0x05
+#define ACK_TOTAL_LENGTH 0x06
 #define TEMP_TOTAL_LENGTH 0x0A
 
 // Single Commands
