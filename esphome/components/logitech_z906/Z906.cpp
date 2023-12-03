@@ -35,11 +35,11 @@ int Z906::update() {
   this->amplifier_uart_->write_byte(GET_STATUS);
   unsigned long currentMillis = millis();
 
-  while (this->amplifier_uart_->available() < STATUS_TOTAL_LENGTH)
+  while (this->amplifier_uart_->available() < STATUS_TOTAL_LENGTH){
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       ESP_LOGD(TAG, "SERIAL TIMEOUT!");
       return 0;
-
+  }
   for (int i = 0; i < STATUS_TOTAL_LENGTH; i++) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
@@ -120,11 +120,11 @@ int Z906::write_status(){
   }
   unsigned long currentMillis = millis();
 
-  while (this->amplifier_uart_->available() < ACK_TOTAL_LENGTH)
+  while (this->amplifier_uart_->available() < ACK_TOTAL_LENGTH){
     if (millis() - currentMillis > SERIAL_TIME_OUT)
       ESP_LOGD(TAG, "SERIAL TIMEOUT!");
       return 0;
-
+  }
   for (int i = 0; i < ACK_TOTAL_LENGTH; i++) {
     uint8_t data = 0;
     this->amplifier_uart_->read_byte(&data);
