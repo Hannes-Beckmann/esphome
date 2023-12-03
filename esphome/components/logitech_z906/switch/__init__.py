@@ -5,8 +5,9 @@ from .. import LOGITECH_Z906_COMPONENT_SCHEMA, CONF_LOGITECH_Z906_ID, logitech_z
 
 CONF_MUTE = "mute"
 CONF_POWER = "power"
+CONF_STANDBY = "standby"
 
-TYPES = [CONF_MUTE, CONF_POWER]
+TYPES = [CONF_MUTE, CONF_POWER, CONF_STANDBY]
 
 LogitechZ906Switch = logitech_z906_ns.class_(
     "LogitechZ906Switch", switch.Switch, cg.Component
