@@ -15,7 +15,7 @@ namespace logitech_z906 {
 
 // Single Commands
 
-#define SELECT_INPUT_1 0x02s
+#define SELECT_INPUT_1 0x02
 #define SELECT_INPUT_2 0x05
 #define SELECT_INPUT_3 0x03
 #define SELECT_INPUT_4 0x04
