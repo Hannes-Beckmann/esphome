@@ -262,12 +262,13 @@ void LogitechZ906Component::set_power(bool power){
     bool standby_state_before = this->state_.standby;
     ESP_LOGD(TAG, "standby before power: %s", standby_state_before ? "ON" : "OFF");
     this->power_amp_on();
+    this->z906_.set_state(0 , (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
     this->z906_.cmd(MUTE_OFF);
-    this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
+    this->state_.mute = true;
     ESP_LOGD(TAG, "setting standby to before power: %s", standby_state_before ? "ON" : "OFF");
     this->set_standby(standby_state_before);
-    ESP_LOGD(TAG, "setting mute to before power: %s", mute_state_before ? "ON" : "OFF");
     this->set_mute(mute_state_before);
+    ESP_LOGD(TAG, "setting mute to before power: %s", mute_state_before ? "ON" : "OFF");
     //TODO: Check if z906 update is needed 
   }
   else{
