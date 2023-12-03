@@ -258,7 +258,7 @@ void LogitechZ906Component::set_standby(bool standby) {
   ESP_LOGD(TAG, "Setting standby to %s", standby ? "ON" : "OFF");
   uint8_t cmd = standby ? PWM_ON : PWM_OFF;
   if (this->state_.power){
-    bool mute_state_before = this->state_.mute
+    bool mute_state_before = this->state_.mute;
     this->set_mute(true);
     this->z906_.cmd(cmd);
     this->set_mute(mute_state_before);
