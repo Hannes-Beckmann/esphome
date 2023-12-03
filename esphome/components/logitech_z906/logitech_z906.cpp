@@ -269,6 +269,7 @@ void LogitechZ906Component::set_power(bool power){
     this->set_mute(true);
     //TODO: Maybe an eeprom save is neccessary here. Since we restore state in when powering on this might not be neccessary. This would be useful to restore state if the sp was turned off.  
     this->power_output_->turn_off();
+    this->state_.power = false;
   }
 }
 
