@@ -125,8 +125,8 @@ class Z906 {
   uint8_t main_sensor();
   uint8_t status[STATUS_TOTAL_LENGTH];
   int update();
-  void Z906::set_state(uint8_t main_volume, uint8_t sub_volume, uint8_t rear_volume, uint8_t center_volume, uint8_t input, uint8_t* effects);
-  int Z906::write_status();
+  void set_state(uint8_t main_volume, uint8_t sub_volume, uint8_t rear_volume, uint8_t center_volume, uint8_t input, uint8_t* effects);
+  int write_status();
 
 
  protected:

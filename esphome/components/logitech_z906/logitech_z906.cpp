@@ -9,7 +9,7 @@ static const char *const TAG = "logitech_z906";
 float LogitechZ906Component::get_setup_priority() const { return setup_priority::DATA; }
 
 void LogitechZ906Component::setup() {
-  if (!this->z906_->update()){
+  if (!this->z906_.update()){
     mark_failed();
     return;
   }
@@ -98,7 +98,7 @@ void LogitechZ906Component::set_number_value(NumberType type, float value) {
   switch (type) {
     case MASTER:
       //umute if master volume is adjusted
-      this->set_mute(false)
+      this->set_mute(false);
       this->set_volume(this->state_.master_volume, value, LEVEL_MAIN_UP, LEVEL_MAIN_DOWN);
       this->state_.master_volume = (uint8_t) value;
       this->master_volume_->publish_state(this->state_.master_volume);
@@ -144,7 +144,7 @@ void LogitechZ906Component::set_switch_state(SwitchType type, bool state) {
   switch (type) {
     case STANDBY:
       this->set_standby(state);
-      this->publish_state(this->state_.standby);
+      this->standby_->publish_state(this->state_.standby);
       ESP_LOGD(TAG, "Standby is state: %s", this->state_.postandbywer ? "true" : "false");
       break;
     case POWER:
@@ -235,7 +235,7 @@ void LogitechZ906Component::set_power(bool power){
     //TODO: make this async
     unsigned long timeout_millis = millis();
     while (!this->z906_.is_powered_on()){
-      delay(1000)
+      delay(1000);
       if (millis() - timeout_millis > 100000){
         return;
       }

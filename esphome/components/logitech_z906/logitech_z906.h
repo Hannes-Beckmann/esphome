@@ -39,12 +39,13 @@ class LogitechZ906Component : public Component {
   void set_source(const std::string &source);
   void set_effect(const std::string &effect);
 
-  void set_volume(float *current_volume, float value, uint8_t cmd_up, uint8_t cmd_down);
+  void set_volume(float current_volume, float value, uint8_t cmd_up, uint8_t cmd_down);
 
   void set_power(bool power);
   void set_mute(bool mute);
+  void set_standby(bool standby);
 
-  void update_internal_state(State *state);
+  void update_internal_state();
   void publish_internal_state();
 
  protected:
@@ -63,7 +64,7 @@ class LogitechZ906Component : public Component {
 
   switch_::Switch *standby_;
   switch_::Switch *mute_;
-  switch_::Switch *standby_;
+  switch_::Switch *power_;
 
   output::BinaryOutput *power_output_;
 
