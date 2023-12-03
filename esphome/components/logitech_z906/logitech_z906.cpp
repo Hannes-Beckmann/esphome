@@ -9,12 +9,12 @@ static const char *const TAG = "logitech_z906";
 float LogitechZ906Component::get_setup_priority() const { return setup_priority::DATA; }
 
 void LogitechZ906Component::setup() {
-  if (!this->z906_.update()){
-    mark_failed();
-    return;
-  }
-  this->update_internal_state();
-  this->publish_internal_state();
+  // if (!this->z906_.update()){
+  //   mark_failed();
+  //   return;
+  // }
+  // this->update_internal_state();
+  // this->publish_internal_state();
 }
 
 void LogitechZ906Component::loop() {}
