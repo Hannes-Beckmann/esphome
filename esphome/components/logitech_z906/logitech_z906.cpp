@@ -235,11 +235,13 @@ void LogitechZ906Component::set_power(bool power){
     //TODO: make this async
     unsigned long timeout_millis = millis();
     while (!this->z906_.is_powered_on()){
+      ESP_LOGD(TAG, "wait for power on");
       delay(1000);
       if (millis() - timeout_millis > 100000){
         return;
       }
     }
+    ESP_LOGD(TAG, "power is on");
     this->state_.power = true;
     //this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
     //if(!this->state_.standby){
