@@ -255,8 +255,8 @@ void LogitechZ906Component::set_power(bool power){
     bool standby_state_before = this->state_.standby;
     this->power_amp_on();
     this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
-    this->set_standby(this->standby_state_before);
-    this->set_mute(this->mute_state_before);
+    this->set_standby(standby_state_before);
+    this->set_mute(mute_state_before);
     //TODO: Check if z906 update is needed 
   }
   else{
