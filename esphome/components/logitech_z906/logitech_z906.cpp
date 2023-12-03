@@ -28,17 +28,17 @@ void LogitechZ906Component::set_amplifier_uart_parent(uart::UARTComponent *ampli
 
 void LogitechZ906Component::update_internal_state() {
   //TODO: Check if you can do this conversion from input
-  this->state_->input = (Input) this->z906_.status[STATUS_CURRENT_INPUT];
-  this->state_->effect[0] = (Effect) this->z906_.status[STATUS_FX_INPUT_1];
-  this->state_->effect[1] = (Effect) this->z906_.status[STATUS_FX_INPUT_2];
-  this->state_->effect[2] = (Effect) this->z906_.status[STATUS_FX_INPUT_3];
-  this->state_->effect[3] = (Effect) this->z906_.status[STATUS_FX_INPUT_4];
-  this->state_->effect[4] = (Effect) this->z906_.status[STATUS_FX_INPUT_5];
-  this->state_->effect[5] = (Effect) this->z906_.status[STATUS_FX_INPUT_AUX];
-  this->state_->master_volume = this->z906_.status[STATUS_MAIN_LEVEL];
-  this->state_->bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
-  this->state_->center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
-  this->state_->rear_volume = this->z906_.status[STATUS_READ_LEVEL];
+  this->state_.input = (Input) this->z906_.status[STATUS_CURRENT_INPUT];
+  this->state_.effect[0] = (Effect) this->z906_.status[STATUS_FX_INPUT_1];
+  this->state_.effect[1] = (Effect) this->z906_.status[STATUS_FX_INPUT_2];
+  this->state_.effect[2] = (Effect) this->z906_.status[STATUS_FX_INPUT_3];
+  this->state_.effect[3] = (Effect) this->z906_.status[STATUS_FX_INPUT_4];
+  this->state_.effect[4] = (Effect) this->z906_.status[STATUS_FX_INPUT_5];
+  this->state_.effect[5] = (Effect) this->z906_.status[STATUS_FX_INPUT_AUX];
+  this->state_.master_volume = this->z906_.status[STATUS_MAIN_LEVEL];
+  this->state_.bass_volume = this->z906_.status[STATUS_SUB_LEVEL];
+  this->state_.center_volume = this->z906_.status[STATUS_CENTER_LEVEL];
+  this->state_.rear_volume = this->z906_.status[STATUS_READ_LEVEL];
   // state->power = this->z906_.status[STATUS_STBY] == 0;
 }
 
@@ -241,7 +241,7 @@ void LogitechZ906Component::set_power(bool power){
       }
     }
     this->state_.power = true;
-    this->z906_.set_state(this->state_.master_volume, this->state_.bass_volume, this->state_.rear_volume, this->state_.center_volume, this->state_.input, this->state_.effect);
+    this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, this->state_.input, this->state_.effect);
     if(!this->state_.standby){
       this->set_standby(false);
     }
