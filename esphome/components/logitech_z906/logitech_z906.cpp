@@ -9,12 +9,12 @@ static const char *const TAG = "logitech_z906";
 float LogitechZ906Component::get_setup_priority() const { return setup_priority::DATA; }
 
 void LogitechZ906Component::setup() {
-  // if (!this->z906_.update()){
-  //   mark_failed();
-  //   return;
-  // }
-  // this->update_internal_state();
-  // this->publish_internal_state();
+  power_amp_on();
+  if(!this->state_.power){
+    mark_failed();
+  }
+  this->update_internal_state();
+  this->publish_internal_state();
 }
 
 void LogitechZ906Component::loop() {}
@@ -229,9 +229,8 @@ void LogitechZ906Component::set_volume(float current_volume, float value, uint8_
   }
 }
 
-void LogitechZ906Component::set_power(bool power){
-  ESP_LOGD(TAG, "Setting power to %s", power ? "ON" : "OFF");
-  if (power){
+void LogitechZ906Component::power_amp_on(){
+  if (!this->power_output_->state){
     this->power_output_->turn_on();
     //TODO: make this async
     unsigned long timeout_millis = millis();
@@ -244,10 +243,20 @@ void LogitechZ906Component::set_power(bool power){
     }
     ESP_LOGD(TAG, "power is on");
     this->state_.power = true;
-    //this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
-    //if(!this->state_.standby){
-      //this->set_standby(false);
-    //}
+    this->state_.standby = false;
+    this->state_.mute = false;
+  }
+}
+
+void LogitechZ906Component::set_power(bool power){
+  ESP_LOGD(TAG, "Setting power to %s", power ? "ON" : "OFF");
+  if (power){
+    bool mute_state_before = this->state_.mute;
+    bool standby_state_before = this->state_.standby;
+    this->power_amp_on();
+    this->z906_.set_state((uint8_t)this->state_.master_volume, (uint8_t)this->state_.bass_volume,(uint8_t) this->state_.rear_volume,(uint8_t) this->state_.center_volume, (uint8_t)this->state_.input, (uint8_t*)this->state_.effect);
+    this->set_standby(this->standby_state_before);
+    this->set_mute(this->mute_state_before);
     //TODO: Check if z906 update is needed 
   }
   else{
