@@ -271,10 +271,12 @@ void LogitechZ906Component::set_power(bool power){
     //TODO: Check if z906 update is needed 
   }
   else{
+    bool mute_state_before = this->state_.mute;
     this->set_mute(true);
     this-z906_.cmd(EEPROM_SAVE);
     this->power_output_->turn_off();
     this->state_.power = false;
+    this->state_.mute = mute_state_before;
   }
 }
 
