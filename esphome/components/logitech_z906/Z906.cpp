@@ -38,6 +38,7 @@ int Z906::update() {
 
   while (this->amplifier_uart_->available() < STATUS_TOTAL_LENGTH) {
     if (millis() - currentMillis > SERIAL_TIME_OUT) {
+      ESP_LOGD(TAG, "Serial timeout");
       return 0;
     }
   }
@@ -57,7 +58,7 @@ int Z906::update() {
   if (status[STATUS_CHECKSUM] == LRC(status, STATUS_TOTAL_LENGTH)) {
     return 1;
   }
-
+  ESP_LOGD(TAG, "Checksum failed");
   return 0;
 }
 
@@ -83,6 +84,7 @@ int Z906::cmd(uint8_t cmd) {
 
   while (this->amplifier_uart_->available() == 0) {
     if (millis() - currentMillis > SERIAL_TIME_OUT) {
+      ESP_LOGD(TAG, "Serial timeout");
       return 0;
     }
   }
@@ -130,6 +132,7 @@ int Z906::write_status() {
 
   while (this->amplifier_uart_->available() < ACK_TOTAL_LENGTH) {
     if (millis() - currentMillis > SERIAL_TIME_OUT) {
+      ESP_LOGD(TAG, "Serial timeout");
       return 0;
     }
   }
@@ -159,6 +162,7 @@ uint8_t Z906::main_sensor() {
 
   while (this->amplifier_uart_->available() < TEMP_TOTAL_LENGTH)
     if (millis() - currentMillis > SERIAL_TIME_OUT) {
+      ESP_LOGD(TAG, "Serial timeout");
       return 0;
     }
 
