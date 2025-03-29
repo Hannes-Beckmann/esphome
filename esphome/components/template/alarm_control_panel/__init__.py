@@ -1,22 +1,17 @@
 import esphome.codegen as cg
+from esphome.components import alarm_control_panel, binary_sensor
 import esphome.config_validation as cv
-from esphome.components import (
-    binary_sensor,
-    alarm_control_panel,
-)
-from esphome.const import (
-    CONF_ID,
-    CONF_BINARY_SENSORS,
-    CONF_INPUT,
-    CONF_RESTORE_MODE,
-)
+from esphome.const import CONF_BINARY_SENSORS, CONF_ID, CONF_INPUT, CONF_RESTORE_MODE
+
 from .. import template_ns
 
-CODEOWNERS = ["@grahambrown11"]
+CODEOWNERS = ["@grahambrown11", "@hwstar"]
 
 CONF_CODES = "codes"
 CONF_BYPASS_ARMED_HOME = "bypass_armed_home"
 CONF_BYPASS_ARMED_NIGHT = "bypass_armed_night"
+CONF_CHIME = "chime"
+CONF_TRIGGER_MODE = "trigger_mode"
 CONF_REQUIRES_CODE_TO_ARM = "requires_code_to_arm"
 CONF_ARMING_HOME_TIME = "arming_home_time"
 CONF_ARMING_NIGHT_TIME = "arming_night_time"
@@ -24,15 +19,19 @@ CONF_ARMING_AWAY_TIME = "arming_away_time"
 CONF_PENDING_TIME = "pending_time"
 CONF_TRIGGER_TIME = "trigger_time"
 
+
 FLAG_NORMAL = "normal"
 FLAG_BYPASS_ARMED_HOME = "bypass_armed_home"
 FLAG_BYPASS_ARMED_NIGHT = "bypass_armed_night"
+FLAG_CHIME = "chime"
 
 BinarySensorFlags = {
     FLAG_NORMAL: 1 << 0,
     FLAG_BYPASS_ARMED_HOME: 1 << 1,
     FLAG_BYPASS_ARMED_NIGHT: 1 << 2,
+    FLAG_CHIME: 1 << 3,
 }
+
 
 TemplateAlarmControlPanel = template_ns.class_(
     "TemplateAlarmControlPanel", alarm_control_panel.AlarmControlPanel, cg.Component
@@ -44,6 +43,14 @@ TemplateAlarmControlPanelRestoreMode = template_ns.enum(
 RESTORE_MODES = {
     "ALWAYS_DISARMED": TemplateAlarmControlPanelRestoreMode.ALARM_CONTROL_PANEL_ALWAYS_DISARMED,
     "RESTORE_DEFAULT_DISARMED": TemplateAlarmControlPanelRestoreMode.ALARM_CONTROL_PANEL_RESTORE_DEFAULT_DISARMED,
+}
+
+AlarmSensorType = template_ns.enum("AlarmSensorType")
+
+ALARM_SENSOR_TYPES = {
+    "DELAYED": AlarmSensorType.ALARM_SENSOR_TYPE_DELAYED,
+    "INSTANT": AlarmSensorType.ALARM_SENSOR_TYPE_INSTANT,
+    "DELAYED_FOLLOWER": AlarmSensorType.ALARM_SENSOR_TYPE_DELAYED_FOLLOWER,
 }
 
 
@@ -60,6 +67,10 @@ TEMPLATE_ALARM_CONTROL_PANEL_BINARY_SENSOR_SCHEMA = cv.maybe_simple_value(
         cv.Required(CONF_INPUT): cv.use_id(binary_sensor.BinarySensor),
         cv.Optional(CONF_BYPASS_ARMED_HOME, default=False): cv.boolean,
         cv.Optional(CONF_BYPASS_ARMED_NIGHT, default=False): cv.boolean,
+        cv.Optional(CONF_CHIME, default=False): cv.boolean,
+        cv.Optional(CONF_TRIGGER_MODE, default="DELAYED"): cv.enum(
+            ALARM_SENSOR_TYPES, upper=True, space="_"
+        ),
     },
     key=CONF_INPUT,
 )
@@ -123,6 +134,7 @@ async def to_code(config):
 
     for sensor in config.get(CONF_BINARY_SENSORS, []):
         bs = await cg.get_variable(sensor[CONF_INPUT])
+
         flags = BinarySensorFlags[FLAG_NORMAL]
         if sensor[CONF_BYPASS_ARMED_HOME]:
             flags |= BinarySensorFlags[FLAG_BYPASS_ARMED_HOME]
@@ -130,7 +142,9 @@ async def to_code(config):
         if sensor[CONF_BYPASS_ARMED_NIGHT]:
             flags |= BinarySensorFlags[FLAG_BYPASS_ARMED_NIGHT]
             supports_arm_night = True
-        cg.add(var.add_sensor(bs, flags))
+        if sensor[CONF_CHIME]:
+            flags |= BinarySensorFlags[FLAG_CHIME]
+        cg.add(var.add_sensor(bs, flags, sensor[CONF_TRIGGER_MODE]))
 
     cg.add(var.set_supports_arm_home(supports_arm_home))
     cg.add(var.set_supports_arm_night(supports_arm_night))

@@ -1,7 +1,7 @@
-import esphome.codegen as cg
-import esphome.config_validation as cv
 from esphome import automation
+import esphome.codegen as cg
 from esphome.components import cover
+import esphome.config_validation as cv
 from esphome.const import (
     CONF_ASSUMED_STATE,
     CONF_CLOSE_ACTION,
@@ -11,14 +11,15 @@ from esphome.const import (
     CONF_OPEN_ACTION,
     CONF_OPTIMISTIC,
     CONF_POSITION,
+    CONF_POSITION_ACTION,
     CONF_RESTORE_MODE,
     CONF_STATE,
     CONF_STOP_ACTION,
     CONF_TILT,
     CONF_TILT_ACTION,
     CONF_TILT_LAMBDA,
-    CONF_POSITION_ACTION,
 )
+
 from .. import template_ns
 
 TemplateCover = template_ns.class_("TemplateCover", cover.Cover, cg.Component)
@@ -31,6 +32,7 @@ RESTORE_MODES = {
 }
 
 CONF_HAS_POSITION = "has_position"
+CONF_TOGGLE_ACTION = "toggle_action"
 
 CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
     {
@@ -44,6 +46,7 @@ CONFIG_SCHEMA = cover.COVER_SCHEMA.extend(
         cv.Optional(CONF_STOP_ACTION): automation.validate_automation(single=True),
         cv.Optional(CONF_TILT_ACTION): automation.validate_automation(single=True),
         cv.Optional(CONF_TILT_LAMBDA): cv.returning_lambda,
+        cv.Optional(CONF_TOGGLE_ACTION): automation.validate_automation(single=True),
         cv.Optional(CONF_POSITION_ACTION): automation.validate_automation(single=True),
         cv.Optional(CONF_RESTORE_MODE, default="RESTORE"): cv.enum(
             RESTORE_MODES, upper=True
@@ -74,6 +77,11 @@ async def to_code(config):
             var.get_stop_trigger(), [], config[CONF_STOP_ACTION]
         )
         cg.add(var.set_has_stop(True))
+    if CONF_TOGGLE_ACTION in config:
+        await automation.build_automation(
+            var.get_toggle_trigger(), [], config[CONF_TOGGLE_ACTION]
+        )
+        cg.add(var.set_has_toggle(True))
     if CONF_TILT_ACTION in config:
         await automation.build_automation(
             var.get_tilt_trigger(), [(float, "tilt")], config[CONF_TILT_ACTION]

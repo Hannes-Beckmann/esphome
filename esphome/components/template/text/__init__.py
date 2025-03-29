@@ -1,17 +1,18 @@
 from esphome import automation
 import esphome.codegen as cg
-import esphome.config_validation as cv
 from esphome.components import text
+import esphome.config_validation as cv
 from esphome.const import (
     CONF_INITIAL_VALUE,
     CONF_LAMBDA,
-    CONF_OPTIMISTIC,
-    CONF_RESTORE_VALUE,
     CONF_MAX_LENGTH,
     CONF_MIN_LENGTH,
+    CONF_OPTIMISTIC,
     CONF_PATTERN,
+    CONF_RESTORE_VALUE,
     CONF_SET_ACTION,
 )
+
 from .. import template_ns
 
 TemplateText = template_ns.class_("TemplateText", text.Text, cg.PollingComponent)
@@ -28,7 +29,7 @@ def validate(config):
             raise cv.Invalid("optimistic cannot be used with lambda")
         if CONF_INITIAL_VALUE in config:
             raise cv.Invalid("initial_value cannot be used with lambda")
-        if CONF_RESTORE_VALUE in config:
+        if config[CONF_RESTORE_VALUE]:
             raise cv.Invalid("restore_value cannot be used with lambda")
     elif CONF_INITIAL_VALUE not in config:
         config[CONF_INITIAL_VALUE] = ""
@@ -39,8 +40,8 @@ def validate(config):
         )
 
     with cv.prepend_path(CONF_MIN_LENGTH):
-        if config[CONF_MIN_LENGTH] >= config[CONF_MAX_LENGTH]:
-            raise cv.Invalid("min_length must be less than max_length")
+        if config[CONF_MIN_LENGTH] > config[CONF_MAX_LENGTH]:
+            raise cv.Invalid("min_length must be less than or equal to max_length")
     return config
 
 

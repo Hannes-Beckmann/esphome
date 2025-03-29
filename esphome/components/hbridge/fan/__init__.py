@@ -1,18 +1,20 @@
-import esphome.codegen as cg
-import esphome.config_validation as cv
 from esphome import automation
 from esphome.automation import maybe_simple_id
+import esphome.codegen as cg
 from esphome.components import fan, output
+from esphome.components.fan import validate_preset_modes
+import esphome.config_validation as cv
 from esphome.const import (
-    CONF_ID,
     CONF_DECAY_MODE,
-    CONF_SPEED_COUNT,
+    CONF_ENABLE_PIN,
+    CONF_ID,
     CONF_PIN_A,
     CONF_PIN_B,
-    CONF_ENABLE_PIN,
+    CONF_PRESET_MODES,
+    CONF_SPEED_COUNT,
 )
-from .. import hbridge_ns
 
+from .. import hbridge_ns
 
 CODEOWNERS = ["@WeekendWarrior"]
 
@@ -28,7 +30,6 @@ DECAY_MODE_OPTIONS = {
 # Actions
 BrakeAction = hbridge_ns.class_("BrakeAction", automation.Action)
 
-
 CONFIG_SCHEMA = fan.FAN_SCHEMA.extend(
     {
         cv.GenerateID(CONF_ID): cv.declare_id(HBridgeFan),
@@ -39,6 +40,7 @@ CONFIG_SCHEMA = fan.FAN_SCHEMA.extend(
         ),
         cv.Optional(CONF_SPEED_COUNT, default=100): cv.int_range(min=1),
         cv.Optional(CONF_ENABLE_PIN): cv.use_id(output.FloatOutput),
+        cv.Optional(CONF_PRESET_MODES): validate_preset_modes,
     }
 ).extend(cv.COMPONENT_SCHEMA)
 
@@ -69,3 +71,6 @@ async def to_code(config):
     if CONF_ENABLE_PIN in config:
         enable_pin = await cg.get_variable(config[CONF_ENABLE_PIN])
         cg.add(var.set_enable_pin(enable_pin))
+
+    if CONF_PRESET_MODES in config:
+        cg.add(var.set_preset_modes(config[CONF_PRESET_MODES]))

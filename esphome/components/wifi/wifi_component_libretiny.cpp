@@ -1,5 +1,6 @@
 #include "wifi_component.h"
 
+#ifdef USE_WIFI
 #ifdef USE_LIBRETINY
 
 #include <utility>
@@ -81,10 +82,19 @@ bool WiFiComponent::wifi_sta_ip_config_(optional<ManualIP> manual_ip) {
   return true;
 }
 
-network::IPAddress WiFiComponent::wifi_sta_ip() {
+network::IPAddresses WiFiComponent::wifi_sta_ip_addresses() {
   if (!this->has_sta())
     return {};
-  return {WiFi.localIP()};
+  network::IPAddresses addresses;
+  addresses[0] = WiFi.localIP();
+#if USE_NETWORK_IPV6
+  int i = 1;
+  auto v6_addresses = WiFi.allLocalIPv6();
+  for (auto address : v6_addresses) {
+    addresses[i++] = network::IPAddress(address.toString().c_str());
+  }
+#endif /* USE_NETWORK_IPV6 */
+  return addresses;
 }
 
 bool WiFiComponent::wifi_apply_hostname_() {
@@ -320,6 +330,11 @@ void WiFiComponent::wifi_event_callback_(esphome_wifi_event_id_t event, esphome_
       s_sta_connecting = false;
       break;
     }
+    case ESPHOME_EVENT_ID_WIFI_STA_GOT_IP6: {
+      // auto it = info.got_ip.ip_info;
+      ESP_LOGV(TAG, "Event: Got IPv6");
+      break;
+    }
     case ESPHOME_EVENT_ID_WIFI_STA_LOST_IP: {
       ESP_LOGV(TAG, "Event: Lost IP");
       break;
@@ -412,6 +427,8 @@ void WiFiComponent::wifi_scan_done_callback_() {
   WiFi.scanDelete();
   this->scan_done_ = true;
 }
+
+#ifdef USE_WIFI_AP
 bool WiFiComponent::wifi_ap_ip_config_(optional<ManualIP> manual_ip) {
   // enable AP
   if (!this->wifi_mode_({}, true))
@@ -423,6 +440,7 @@ bool WiFiComponent::wifi_ap_ip_config_(optional<ManualIP> manual_ip) {
     return WiFi.softAPConfig(IPAddress(192, 168, 4, 1), IPAddress(192, 168, 4, 1), IPAddress(255, 255, 255, 0));
   }
 }
+
 bool WiFiComponent::wifi_start_ap_(const WiFiAP &ap) {
   // enable AP
   if (!this->wifi_mode_({}, true))
@@ -438,7 +456,10 @@ bool WiFiComponent::wifi_start_ap_(const WiFiAP &ap) {
   return WiFi.softAP(ap.get_ssid().c_str(), ap.get_password().empty() ? NULL : ap.get_password().c_str(),
                      ap.get_channel().value_or(1), ap.get_hidden());
 }
+
 network::IPAddress WiFiComponent::wifi_soft_ap_ip() { return {WiFi.softAPIP()}; }
+#endif  // USE_WIFI_AP
+
 bool WiFiComponent::wifi_disconnect_() { return WiFi.disconnect(); }
 
 bssid_t WiFiComponent::wifi_bssid() {
@@ -452,7 +473,7 @@ bssid_t WiFiComponent::wifi_bssid() {
 }
 std::string WiFiComponent::wifi_ssid() { return WiFi.SSID().c_str(); }
 int8_t WiFiComponent::wifi_rssi() { return WiFi.RSSI(); }
-int32_t WiFiComponent::wifi_channel_() { return WiFi.channel(); }
+int32_t WiFiComponent::get_wifi_channel() { return WiFi.channel(); }
 network::IPAddress WiFiComponent::wifi_subnet_mask_() { return {WiFi.subnetMask()}; }
 network::IPAddress WiFiComponent::wifi_gateway_ip_() { return {WiFi.gatewayIP()}; }
 network::IPAddress WiFiComponent::wifi_dns_ip_(int num) { return {WiFi.dnsIP(num)}; }
@@ -462,3 +483,4 @@ void WiFiComponent::wifi_loop_() {}
 }  // namespace esphome
 
 #endif  // USE_LIBRETINY
+#endif
