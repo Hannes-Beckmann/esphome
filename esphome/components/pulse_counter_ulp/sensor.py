@@ -7,7 +7,6 @@ import esphome.config_validation as cv
 from esphome.const import (
     CONF_COUNT_MODE,
     CONF_DEBOUNCE,
-    CONF_EDGES_WAKEUP,
     CONF_FALLING_EDGE,
     CONF_ID,
     CONF_PIN,
@@ -21,6 +20,8 @@ from esphome.const import (
     UNIT_PULSES_PER_MINUTE,
     UNIT_PULSES,
 )
+
+CONF_EDGES_WAKEUP = "edges_wakeup"
 
 pulse_counter_ulp_ns = cg.esphome_ns.namespace("pulse_counter_ulp")
 CountMode = pulse_counter_ulp_ns.enum("CountMode", is_class=True)
